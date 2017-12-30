@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Enemy
+  - Station
+  - LeapMount
+  - Orb
+  - WayPoint
+  - GameManager
+  - Systems
+  - PlayerShip
+  - LeapControl
+  - LeftArm
+  - WayPointManager
+  - Decoy
+  - Meteor
+  - Asteroid
+  - Hyperdrive
+  - Cloak
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - Environment
+  - Player
+  - Enemies
+  - Projectile
+  - LeapMotion
+  - Ship
+  - Raycast
+  - Explosion
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
