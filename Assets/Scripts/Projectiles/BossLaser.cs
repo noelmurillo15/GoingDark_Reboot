@@ -28,9 +28,9 @@ public class BossLaser : MonoBehaviour {
 
         if (obj1 != null)
         {
+            obj1.SetActive(true);
             obj1.transform.position = Laser.transform.position;
             obj1.transform.rotation = Laser.transform.rotation;
-            obj1.SetActive(true);
         }
     }
 
