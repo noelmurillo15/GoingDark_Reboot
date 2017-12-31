@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 using GoingDark.Core.Enums;
 
-public class MissileProjectile : MonoBehaviour
-{
+
+public class MissileProjectile : MonoBehaviour {
 
     #region Properties
     [SerializeField]

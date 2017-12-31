@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 using UnityEngine.UI;
 using GoingDark.Core.Enums;
 
-public class MissileSystem : ShipSystem
-{
+
+public class MissileSystem : ShipSystem {
+
     #region Missile Data
     private int[] Count = new int[4];
     public MissileType Type { get; private set; }

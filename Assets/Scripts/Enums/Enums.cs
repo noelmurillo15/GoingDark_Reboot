@@ -116,35 +116,4 @@
         Damaged
     }
     #endregion
-
-    #region Missions
-    public enum MissionType
-    {
-        Scavenge,
-        Combat,
-        Stealth,
-        Elimination,
-        ControlPoint,
-        RockBreak
-    }
-    public struct Mission
-    {
-        public string missionName;
-        public string missionInfo;
-        public string blueprint;
-
-        public bool completed;
-        public bool isOptional;
-        public bool spotted;
-        public bool isActive;
-
-        public float missionTimer;
-
-        public int credits;
-        public int objectives;
-
-        public MissionType type;
-        public EnemyTypes enemy;
-    }
-    #endregion
 }

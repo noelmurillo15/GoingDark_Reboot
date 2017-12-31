@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 using GoingDark.Core.Enums;
 
-public class ObjectPoolManager : MonoBehaviour
-{
+
+public class ObjectPoolManager : MonoBehaviour {
 
     private Transform MyTransform;
 
@@ -140,7 +143,6 @@ public class ObjectPoolManager : MonoBehaviour
         Debug.LogError("Pool Manager Ran Out Of Player : " + _type + " Explosions");
         return null;
     }
-
 
     public GameObject GetMissile(EnemyMissileType _type)
     {

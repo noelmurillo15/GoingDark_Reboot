@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 using GoingDark.Core.Enums;
 
-public class LaserProjectile : MonoBehaviour
-{
+public class LaserProjectile : MonoBehaviour {
+
     #region Properties
     [SerializeField]
     public LaserType Type;

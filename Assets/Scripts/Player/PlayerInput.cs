@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 using GoingDark.Core.Enums;
 
-public class PlayerInput : MonoBehaviour
-{
+
+public class PlayerInput : MonoBehaviour {
+
     #region Properties
     [SerializeField] MyInputManager myInput;
 
@@ -29,13 +33,13 @@ public class PlayerInput : MonoBehaviour
         missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
     }
 
-    void FixedUpdate() {
+    void Update() {
 
         if (myInput.GetRightClick())
             lasers.WeaponSwap();
 
         if (myInput.GetLeftClick()) {
-            if(missiles == null)
+            if (missiles == null)
                 missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
 
             missiles.WeaponSwap();
@@ -50,10 +54,10 @@ public class PlayerInput : MonoBehaviour
         if (myInput.GetYButton())
             systems.ActivateSystem(SystemType.Hyperdrive);
 
-        if (myInput.GetLeftBumper())
+        if (myInput.GetLeftBumper() || myInput.GetOculusLeftBumper() > .5f)
             systems.ActivateSystem(SystemType.Missile);
 
-        if (myInput.GetRightBumper())
+        if (myInput.GetRightBumper() || myInput.GetOculusRightBumper() > .5f)
             systems.ActivateSystem(SystemType.Laser);
     }
 }

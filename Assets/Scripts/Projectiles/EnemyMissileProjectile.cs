@@ -22,7 +22,7 @@ public class EnemyMissileProjectile : MonoBehaviour
     private Transform MyTransform;
     private Rigidbody MyRigidbody;
     private MessageScript messages;
-    //private ObjectPoolManager poolManager;
+    private ObjectPoolManager poolManager;
     #endregion
 
 
@@ -31,9 +31,9 @@ public class EnemyMissileProjectile : MonoBehaviour
         if (!init)
         {
             init = true;
-            target = null;
             tracking = false;
             targetRotation = Quaternion.identity;
+            target = GameObject.FindGameObjectWithTag("Player").transform;
 
             switch (Type)
             {
@@ -65,19 +65,18 @@ public class EnemyMissileProjectile : MonoBehaviour
                     hitfunc = "MissileDebuff";
                     baseDmg = 33.66f;
                     break;
-            }
+            }            
 
             MyTransform = transform;
             MyRigidbody = GetComponent<Rigidbody>();
             messages = GameObject.Find("PlayerCanvas").GetComponent<MessageScript>();
-            //poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
-
+            poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
             gameObject.SetActive(false);
         }
         else
-        {
-            tracking = false;
-            messages.MissileIncoming();
+        {           
+            tracking = false;            
+            Invoke("InitializeTracking", 1f);
             Invoke("Kill", 3f);
         }
     }
@@ -85,9 +84,12 @@ public class EnemyMissileProjectile : MonoBehaviour
     void FixedUpdate()
     {
         if (tracking)
+        {
             LookAt();
-
-        MyRigidbody.MovePosition(MyTransform.position + MyTransform.forward * Time.fixedDeltaTime * speed);
+            MyTransform.Translate(0f, 0f, speed * Time.fixedDeltaTime);
+        }
+        else
+            MyRigidbody.MovePosition(MyTransform.position + MyTransform.forward * Time.fixedDeltaTime * speed);
     }
 
     #region Accessors
@@ -98,6 +100,17 @@ public class EnemyMissileProjectile : MonoBehaviour
     #endregion
 
     #region Tracking
+    void InitializeTracking()
+    {
+        float rand = Random.Range(1f, 100f);
+        if(rand >= 50f)
+        {
+            messages.MissileIncoming();
+            tracking = true;
+            if (target == null)
+                target = GameObject.FindGameObjectWithTag("Player").transform;
+        }
+    }
     void LookAt()
     {
         if (target != null)
@@ -105,28 +118,28 @@ public class EnemyMissileProjectile : MonoBehaviour
             targetRotation = Quaternion.LookRotation(target.position - MyTransform.position);
             MyTransform.rotation = Quaternion.Slerp(MyTransform.rotation, targetRotation, Time.fixedDeltaTime * rotateSpeed);
         }
-    }
+    }    
     #endregion
 
     #region Recycle Death
     void SetInactive()
     {
-        target = null;
         tracking = false;
         gameObject.SetActive(false);
     }
+
     public void Kill()
     {
         if (IsInvoking("Kill"))
             CancelInvoke("Kill");
 
-        //GameObject go = poolManager.GetMissileExplosion(Type);
+        GameObject go = poolManager.GetEnemyExplosion();
 
-        //if (go != null)
-        //{
-        //    go.transform.position = MyTransform.position;
-        //    go.SetActive(true);
-        //}
+        if (go != null)
+        {
+            go.transform.position = MyTransform.position;
+            go.SetActive(true);
+        }
 
         SetInactive();
     }

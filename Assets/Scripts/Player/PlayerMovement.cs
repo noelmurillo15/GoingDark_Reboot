@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 
 
 public class PlayerMovement : MonoBehaviour {
@@ -59,29 +62,18 @@ public class PlayerMovement : MonoBehaviour {
     {
         MoveData.SetSpeed(0f, true);
     }
+
     public void Yaw(Vector2 input)
     {
         MyTransform.Rotate(Vector3.up * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.x));        
     }
     public void Pitch(Vector2 input)
     {
-        MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (MoveData.RotateSpeed * -1 * input.y));
+        MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (MoveData.RotateSpeed * -input.y));
     }
     public void Roll(Vector2 input)
     {
-        MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.x));
-    }
-    public void Yaw(float xinput, float yinput)
-    {
-        MyTransform.Rotate(Vector3.up * Time.fixedDeltaTime * (MoveData.RotateSpeed * xinput));
-    }
-    public void Pitch(float xinput, float yinput)
-    {
-        MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (MoveData.RotateSpeed * -1 * yinput));
-    }
-    public void Roll(float xinput, float yinput)
-    {
-        MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (MoveData.RotateSpeed * xinput));
+        MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (MoveData.RotateSpeed * -input.x));
     }
 
     void Flight()

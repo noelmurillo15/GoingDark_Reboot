@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿// GoingDarkReboot.V1
+//  Allan Noel Murillo
+
+using UnityEngine;
 using GoingDark.Core.Enums;
 using UnityEngine.UI;
 
-public class LaserSystem : ShipSystem
-{
+
+public class LaserSystem : ShipSystem {
+
     #region Properties
     [SerializeField]
     public LaserType Type;
@@ -23,7 +27,6 @@ public class LaserSystem : ShipSystem
     #endregion
 
 
-    // Use this for initialization
     void Start()
     {
         flip = false;
@@ -33,20 +36,15 @@ public class LaserSystem : ShipSystem
         laser_overheat = GetComponent<LaserOverheat>();
         PoolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
 
+        leap = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        MyTransform = transform;
+
         typeTxt = GameObject.Find("LaserChoice").GetComponent<Text>();
         typeTxt.text = "BasicLaser";
         typeTxt.color = Color.cyan;
     }
 
-    private void Awake()
-    {
-        leap = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        MyTransform = transform;
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         if (!laser_overheat.GetOverheat())
             if (Activated)
                 ShootGun();
