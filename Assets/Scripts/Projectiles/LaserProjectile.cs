@@ -32,9 +32,9 @@ public class LaserProjectile : MonoBehaviour
                     break;
             }
             MyTransform = transform;
-            gameObject.SetActive(false);
             stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
             poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
+            gameObject.SetActive(false);
         }
         else
         {
@@ -44,7 +44,7 @@ public class LaserProjectile : MonoBehaviour
 
     void FixedUpdate()
     {
-        MyTransform.Translate(0f, 0f, speed * Time.deltaTime);
+        MyTransform.Translate(0f, 0f, speed * Time.fixedDeltaTime);
     }
 
     public float GetBaseDmg()
@@ -64,13 +64,12 @@ public class LaserProjectile : MonoBehaviour
             go.transform.position = MyTransform.position;
             go.SetActive(true);
         }
-
         gameObject.SetActive(false);
     }
 
     #region Collision
     void OnCollisionEnter(Collision col)
-    {
+    {        
         if (col.transform.CompareTag("Enemy") || col.transform.CompareTag("Orb"))
             col.transform.SendMessage("LaserDmg", this);
 

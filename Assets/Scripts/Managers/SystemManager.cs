@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using GoingDark.Core.Enums;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+
 
 public class SystemManager : MonoBehaviour {
 
@@ -46,7 +46,6 @@ public class SystemManager : MonoBehaviour {
                 if (cloaking.GetCloaked())  
                     cloaking.UnCloakShip();
 
-                Debug.Log("Missile Activating");
                 MainDevices[key].Activate();    //  Activate System                
             }
         }

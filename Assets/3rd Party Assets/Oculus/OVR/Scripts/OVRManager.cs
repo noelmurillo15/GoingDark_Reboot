@@ -1114,7 +1114,8 @@ public class OVRManager : MonoBehaviour
 			float minViewportScale = minRenderScale / UnityEngine.XR.XRSettings.eyeTextureResolutionScale;
 			float recommendedViewportScale = OVRPlugin.GetEyeRecommendedResolutionScale() / UnityEngine.XR.XRSettings.eyeTextureResolutionScale;
 			recommendedViewportScale = Mathf.Clamp(recommendedViewportScale, minViewportScale, 1.0f);
-			UnityEngine.XR.XRSettings.renderViewportScale = recommendedViewportScale;
+            // TODO : Render View Port Scale not supported on deffered rendering path
+			//UnityEngine.XR.XRSettings.renderViewportScale = recommendedViewportScale;
 #else
 			if (VR.VRSettings.renderScale < maxRenderScale)
 			{

@@ -2,8 +2,8 @@
 using UnityEngine;
 
 [Serializable]
-public class MovementProperties
-{
+public class MovementProperties {
+
     public float Speed;
     public float Boost;
     public float MaxSpeed;
@@ -96,4 +96,4 @@ public class MovementProperties
         else
             Speed = 0f;
     }
-}
+} 

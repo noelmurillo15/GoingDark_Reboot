@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
 
-public class PlayerMovement : MonoBehaviour
-{
+public class PlayerMovement : MonoBehaviour {
 
     #region Properties
     [SerializeField] MyInputManager myInput;
@@ -13,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
 
     //  Cached Properties
     private Transform MyTransform;
-    //private ParticleSystem particles;
     private AudioManager _audioInstance;
     private Rigidbody MyRigidbody;
     #endregion
@@ -28,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
 
         _audioInstance = AudioManager.instance;
         MyRigidbody = GetComponent<Rigidbody>();
-        //particles = GetComponent<ParticleSystem>();
     }
 
     void FixedUpdate()
@@ -42,8 +39,7 @@ public class PlayerMovement : MonoBehaviour
         Roll(myInput.GetRightJoystickAxis());
 
 
-        if (boostActive)
-        {
+        if (boostActive) {
             MoveData.Boost = 5f;
             MoveData.Acceleration = 50f;
         }
@@ -96,7 +92,6 @@ public class PlayerMovement : MonoBehaviour
             currentSpeedPercentage = 0f;
 
         _audioInstance.ThrusterVolume(currentSpeedPercentage);
-        //particles.startSpeed = -(currentSpeedPercentage * .1f);
 
         MyRigidbody.AddForce(MyTransform.forward * MoveData.Speed, ForceMode.VelocityChange);
         if (MyRigidbody.velocity.magnitude > MoveData.Speed)

@@ -113,7 +113,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &827714457
+--- !u!1001 &1882776888
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -155,21 +155,6 @@ Prefab:
     - target: {fileID: 1645112675092168, guid: 5f447a516e8fa0d4792a207a2c23619f, type: 2}
       propertyPath: m_Name
       value: Level4
-      objectReference: {fileID: 0}
-    - target: {fileID: 20804327042036612, guid: 5f447a516e8fa0d4792a207a2c23619f,
-        type: 2}
-      propertyPath: far clip plane
-      value: 10000
-      objectReference: {fileID: 0}
-    - target: {fileID: 20804327042036612, guid: 5f447a516e8fa0d4792a207a2c23619f,
-        type: 2}
-      propertyPath: m_AllowDynamicResolution
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114083238330142792, guid: 5f447a516e8fa0d4792a207a2c23619f,
-        type: 2}
-      propertyPath: enableAdaptiveResolution
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5f447a516e8fa0d4792a207a2c23619f, type: 2}

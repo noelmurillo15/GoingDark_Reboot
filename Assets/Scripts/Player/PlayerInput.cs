@@ -29,13 +29,12 @@ public class PlayerInput : MonoBehaviour
         missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
     }
 
-    void Update() {
+    void FixedUpdate() {
 
         if (myInput.GetRightClick())
             lasers.WeaponSwap();
 
-        if (myInput.GetLeftClick())
-        {
+        if (myInput.GetLeftClick()) {
             if(missiles == null)
                 missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
 

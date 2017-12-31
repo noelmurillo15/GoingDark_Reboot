@@ -25,10 +25,10 @@ public class MissileSystem : ShipSystem
 
     void Start()
     {
-        Count[0] = 20;
-        Count[1] = 20;
-        Count[2] = 20;
-        Count[3] = 20;
+        Count[0] = 1000;
+        Count[1] = 1000;
+        Count[2] = 1000;
+        Count[3] = 1000;
 
         maxCooldown = 2.5f;
         Type = MissileType.Basic;        

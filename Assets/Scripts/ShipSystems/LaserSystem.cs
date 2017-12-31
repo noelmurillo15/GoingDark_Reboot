@@ -8,9 +8,9 @@ public class LaserSystem : ShipSystem
     [SerializeField]
     public LaserType Type;
     [SerializeField]
-    public GameObject Gun1;
+    public Transform Gun1;
     [SerializeField]
-    public GameObject Gun2;
+    public Transform Gun2;
 
 
     private bool flip;
@@ -18,6 +18,8 @@ public class LaserSystem : ShipSystem
     private LaserOverheat laser_overheat;
     private ObjectPoolManager PoolManager;
     private Text typeTxt;
+    private Transform MyTransform;
+    private Transform leap;
     #endregion
 
 
@@ -36,12 +38,20 @@ public class LaserSystem : ShipSystem
         typeTxt.color = Color.cyan;
     }
 
+    private void Awake()
+    {
+        leap = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        MyTransform = transform;
+    }
+
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!laser_overheat.GetOverheat())
             if (Activated)
                 ShootGun();
+
+        MyTransform.rotation = leap.rotation;
     }
 
     public void ShootGun()
@@ -52,25 +62,25 @@ public class LaserSystem : ShipSystem
         switch (Type)
         {
             case LaserType.Basic:
-                laser_overheat.UpdateGauge(-10f);
+                //laser_overheat.UpdateGauge(-10f);
                 AudioManager.instance.PlayLaser();            
                 break;
 
             case LaserType.Charged:
-                laser_overheat.UpdateGauge(-20f);
+                //laser_overheat.UpdateGauge(-20f);
                 AudioManager.instance.PlayChargeLaser();
                 break;
         }
 
         if (flip)
         {
-            laser.transform.position = Gun1.transform.position;
-            laser.transform.rotation = Gun1.transform.rotation;
+            laser.transform.position = Gun1.position;
+            laser.transform.rotation = Gun1.rotation;
         }
         else
         {
-            laser.transform.position = Gun2.transform.position;
-            laser.transform.rotation = Gun2.transform.rotation;
+            laser.transform.position = Gun2.position;
+            laser.transform.rotation = Gun2.rotation;
         }
 
         flip = !flip;

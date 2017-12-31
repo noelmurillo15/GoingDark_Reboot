@@ -1,21 +1,9 @@
 ﻿using UnityEngine;
 
 
-public class MyInputManager : MonoBehaviour
-{
+public class MyInputManager : MonoBehaviour {
 
     [SerializeField] bool isOculusTouchConnected;
-
-    //  Xbox controller properties
-    //  Axis
-    [SerializeField] float LeftJoystickX = 0f;
-    [SerializeField] float LeftJoystickY = 0f;
-    [SerializeField] float RightJoystickX = 0f;
-    [SerializeField] float RightJoystickY = 0f;
-    [SerializeField] float LeftTrigger = 0f;
-    [SerializeField] float RightTrigger = 0f;
-    [SerializeField] float DPadX = 0f;
-    [SerializeField] float DPadY = 0f;
 
     ////  Oculus Touch Properties
     ////  Axis
@@ -24,8 +12,7 @@ public class MyInputManager : MonoBehaviour
     ////  Buttons
 
 
-    void Awake()
-    {
+    void Awake() {
         isOculusTouchConnected = OVRInput.IsControllerConnected(OVRInput.Controller.Active);
         Debug.Log("Oculus Touch Controllers Connected : " + isOculusTouchConnected);
     }
@@ -34,99 +21,61 @@ public class MyInputManager : MonoBehaviour
         return isOculusTouchConnected;
     }
 
+    //  Axis
     public Vector2 GetLeftJoystickAxis() {
         Vector2 axis = Vector2.zero;
-        LeftJoystickX = Input.GetAxis("LeftJoystickX");
-        LeftJoystickY = Input.GetAxis("LeftJoystickY");    
-        axis.x = LeftJoystickX;
-        axis.y = LeftJoystickY;
+        axis.x = Input.GetAxis("LeftJoystickX");
+        axis.y = Input.GetAxis("LeftJoystickY");
         return axis;
     }
     public Vector2 GetRightJoystickAxis() {
         Vector2 axis = Vector2.zero;
-        RightJoystickX = Input.GetAxis("RightJoystickX");
-        RightJoystickY = Input.GetAxis("RightJoystickY");
-        axis.x = RightJoystickX;
-        axis.y = RightJoystickY;
+        axis.x = Input.GetAxis("RightJoystickX");
+        axis.y = Input.GetAxis("RightJoystickY");
         return axis;
     }
     public Vector2 GetDPadAxis() {
         Vector2 axis = Vector2.zero;
-        DPadX = Input.GetAxis("DPadX");
-        DPadY = Input.GetAxis("DPadY");
-        axis.x = DPadX;
-        axis.y = DPadY;
+        axis.x = Input.GetAxis("DPadX");
+        axis.y = Input.GetAxis("DPadY");
         return axis;
     }
-
     public float GetLeftTriggerAxis() {
-        LeftTrigger = Input.GetAxis("LTrigger");
-        return LeftTrigger;
+        return Input.GetAxis("LTrigger");
     }
-    public float GetRightTriggerAxis()
-    {
-        RightTrigger = Input.GetAxis("RTrigger");
-        return RightTrigger;
+    public float GetRightTriggerAxis() {
+        return Input.GetAxis("RTrigger");
     }
 
-    public bool GetStartButton()
-    {
-        if (Input.GetButtonDown("Start"))
-            Debug.Log("Start Worked");
+    //  Buttons
+    public bool GetStartButton() {
         return Input.GetButtonDown("Start");
     }
-    public bool GetBackButton()
-    {
-        if (Input.GetButtonDown("Back"))
-            Debug.Log("Back Worked");
+    public bool GetBackButton() {
         return Input.GetButtonDown("Back");
     }
-    public bool GetXButton()
-    {
-        if (Input.GetButtonDown("X"))
-            Debug.Log("X Worked");
+    public bool GetXButton() {
         return Input.GetButtonDown("X");
     }
-    public bool GetYButton()
-    {
-        if (Input.GetButtonDown("Y"))
-            Debug.Log("Y Worked");
+    public bool GetYButton() {
         return Input.GetButtonDown("Y");
     }
-    public bool GetAButton()
-    {
-        if (Input.GetButtonDown("A"))
-            Debug.Log("A Worked");
+    public bool GetAButton() {
         return Input.GetButtonDown("A");
     }
-    public bool GetBButton()
-    {
-        if (Input.GetButtonDown("B"))
-            Debug.Log("B Worked");
+    public bool GetBButton() {
         return Input.GetButtonDown("B");
     }
-    public bool GetLeftBumper()
-    {
-        if (Input.GetButtonDown("LBumper"))
-            Debug.Log("LBumper Worked");
+    public bool GetLeftBumper() {
         return Input.GetButtonDown("LBumper");
     }
-    public bool GetRightBumper()
-    {
-        if (Input.GetButtonDown("RBumper"))
-            Debug.Log("RBumper Worked");
+    public bool GetRightBumper() {
         return Input.GetButton("RBumper");
     }
-    public bool GetLeftClick()
-    {
-        if (Input.GetButtonDown("LeftClick"))
-            Debug.Log("LeftClick Worked");
+    public bool GetLeftClick() {
         return Input.GetButtonDown("LeftClick");
     }
-    public bool GetRightClick()
-    {
-        if (Input.GetButtonDown("RightClick"))
-            Debug.Log("RightClick Worked");
+    public bool GetRightClick() {
         return Input.GetButtonDown("RightClick");
     }
 }

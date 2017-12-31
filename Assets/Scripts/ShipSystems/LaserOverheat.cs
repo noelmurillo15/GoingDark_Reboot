@@ -28,7 +28,7 @@ public class LaserOverheat : MonoBehaviour
             if (CurrentAmount > 99f)
                 Reset();
 
-            UpdateGauge(Time.fixedDeltaTime * 10f);
+            UpdateGauge(Time.fixedDeltaTime * 20f);
         }
     }
 

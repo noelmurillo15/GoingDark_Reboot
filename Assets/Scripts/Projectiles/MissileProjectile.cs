@@ -26,7 +26,7 @@ public class MissileProjectile : MonoBehaviour
     //private PlayerStats stats;
     private Transform target;
     // TODO : explosion should be attached to missile
-    //private ObjectPoolManager poolManager;
+    private ObjectPoolManager poolManager;
     #endregion
 
 
@@ -58,8 +58,8 @@ public class MissileProjectile : MonoBehaviour
             MyTransform = transform;
             MyRigidbody = GetComponent<Rigidbody>();
             //stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
-            //poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
-            //gameObject.SetActive(false);
+            poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
+            gameObject.SetActive(false);
         }
         else
             Invoke("Kill", 3f);
@@ -69,12 +69,17 @@ public class MissileProjectile : MonoBehaviour
     void FixedUpdate()
     {
         if (tracking)
+        {
             LookAt();
-
-        if (!deflected)
-            MyRigidbody.MovePosition(MyTransform.position + MyTransform.forward * Time.fixedDeltaTime * speed);
+            MyTransform.Translate(0f, 0f, speed * Time.fixedDeltaTime);
+        }
         else
-            MyRigidbody.MovePosition(MyTransform.position + -MyTransform.forward * Time.fixedDeltaTime * speed);
+        {
+            if (!deflected)
+                MyRigidbody.MovePosition(MyTransform.position + MyTransform.forward * Time.fixedDeltaTime * speed);
+            else
+                MyRigidbody.MovePosition(MyTransform.position + -MyTransform.forward * Time.fixedDeltaTime * speed);
+        }        
     }
 
     public float GetBaseDmg()
@@ -125,13 +130,13 @@ public class MissileProjectile : MonoBehaviour
         if (IsInvoking("Kill"))
             CancelInvoke("Kill");
 
-        //GameObject go = poolManager.GetMissileExplosion(Type);
-        
-        //if (go != null)
-        //{
-        //    go.transform.position = MyTransform.position;
-        //    go.SetActive(true);
-        //}
+        GameObject go = poolManager.GetMissileExplosion(Type);
+
+        if (go != null)
+        {
+            go.transform.position = MyTransform.position;
+            go.SetActive(true);
+        }
 
         SetInactive();
     }
