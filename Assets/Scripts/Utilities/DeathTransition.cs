@@ -2,16 +2,14 @@
 
 public class DeathTransition : MonoBehaviour
 {
-    private UnityStandardAssets.ImageEffects.VignetteAndChromaticAberration blackOut;
     private bool isDead;
     public bool spawn;
     public bool flip;
-
+    //   TODO : add vignette for death screen transition
     // Use this for initialization
     void Start()
     {
         spawn = false;
-        blackOut = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<UnityStandardAssets.ImageEffects.VignetteAndChromaticAberration>();
     }
 
     // Update is called once per frame
@@ -19,15 +17,11 @@ public class DeathTransition : MonoBehaviour
     {
         if (isDead || spawn)
         {
-            blackOut.intensity += Time.deltaTime;
-            if (blackOut.intensity > 1f)
-                blackOut.intensity = 1f;
+
         }
         else
         {
-            blackOut.intensity -= Time.deltaTime;
-            if (blackOut.intensity < 0f)
-                blackOut.intensity = 0f;
+
         }
     }
 
@@ -50,5 +44,4 @@ public class DeathTransition : MonoBehaviour
     {
         spawn = false;
     }
-
 }

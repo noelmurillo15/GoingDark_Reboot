@@ -32,8 +32,7 @@ public class EnemyMissileProjectile : MonoBehaviour
         {
             init = true;
             tracking = false;
-            targetRotation = Quaternion.identity;
-            target = GameObject.FindGameObjectWithTag("Player").transform;
+            targetRotation = Quaternion.identity;            
 
             switch (Type)
             {
@@ -103,12 +102,16 @@ public class EnemyMissileProjectile : MonoBehaviour
     void InitializeTracking()
     {
         float rand = Random.Range(1f, 100f);
-        if(rand >= 50f)
+        if(rand >= 66.66f)
         {
             messages.MissileIncoming();
             tracking = true;
+            target = GameObject.FindGameObjectWithTag("Player").transform;
             if (target == null)
-                target = GameObject.FindGameObjectWithTag("Player").transform;
+            {
+                Debug.LogError("Enemy Missile Target was not found");
+                tracking = false;
+            }
         }
     }
     void LookAt()
