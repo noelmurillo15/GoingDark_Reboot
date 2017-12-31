@@ -17,9 +17,8 @@ public class Asteroid : MonoBehaviour
 
     private bool skipStart;
     private Vector3 m_velocity;
-    private Vector3 m_rotation;    
+    private Vector3 m_rotation;
     #endregion
-
 
     private void Awake()
     {
@@ -110,24 +109,24 @@ public class Asteroid : MonoBehaviour
             return;
         }
 
-        skipStart = true;
-        boxcol.enabled = false;
         AudioManager.instance.PlayAstDestroy();
         float range = Random.Range(3, 6);
         for (int i = 0; i < range; i++)
         {
-            GameObject go = Instantiate(gameObject) as GameObject;
+            Asteroid go = Instantiate(this) as Asteroid;
+            go.skipStart = true;
+            go.boxcol.enabled = false;
             go.transform.parent = MyTransform.parent;
         }
 
-        if(supplybox != null)
-        {
-            GameObject go = Instantiate(supplybox, MyTransform.position, Quaternion.identity) as GameObject;
-            go.transform.parent = MyTransform.parent;
-        }
-        else
-            Debug.LogError("Asteroid does not have supplyBox attached");
-        
+        //  TODO : Sub emitters must be children of the system that spawns them
+        //if (supplybox != null)
+        //{
+        //    GameObject go = Instantiate(supplybox, MyTransform.position, Quaternion.identity) as GameObject;
+        //    go.transform.parent = MyTransform.parent;
+        //}
+        //else
+        //    Debug.LogError("Asteroid does not have supplyBox attached");
 
         SelfDestruct();
     }    
