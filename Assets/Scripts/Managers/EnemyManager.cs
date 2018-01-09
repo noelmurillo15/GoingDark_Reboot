@@ -42,8 +42,8 @@ public class EnemyManager : MonoBehaviour {
         }
         Debug.Log("Game Difficulty : " + Difficulty.ToString());
 
-        poolmanager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
         PlayerPosition = GameObject.FindGameObjectWithTag("Player").transform;
+        poolmanager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
     }
 
     #region Accessors
@@ -70,9 +70,9 @@ public class EnemyManager : MonoBehaviour {
         {
             explosive.transform.position = enemy.transform.position;
             explosive.SetActive(true);
+            RandomAmmoDrop(enemy.transform.position);
         }
 
-        RandomAmmoDrop(enemy.transform.position);
 
         int creds = 0;         
         switch (enemy.GetEnemyType())

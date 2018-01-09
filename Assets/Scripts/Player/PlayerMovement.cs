@@ -69,11 +69,11 @@ public class PlayerMovement : MonoBehaviour {
     }
     public void Pitch(Vector2 input)
     {
-        MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (MoveData.RotateSpeed * -input.y));
+        MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.y));
     }
     public void Roll(Vector2 input)
     {
-        MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (MoveData.RotateSpeed * -input.x));
+        MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.x));
     }
 
     void Flight()

@@ -1,5 +1,10 @@
-﻿namespace GoingDark.Core.Enums
-{
+﻿// Allan Murillo
+// Going Dark Reboot 
+
+
+namespace GoingDark.Core.Enums {
+
+
     public enum GameDifficulty
     {
         Easy,
