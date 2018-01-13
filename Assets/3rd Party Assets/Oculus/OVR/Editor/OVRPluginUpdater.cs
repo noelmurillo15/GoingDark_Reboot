@@ -275,8 +275,6 @@ class OVRPluginUpdater
 #else
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXUniversal, false);
 #endif
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel, false);
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel64, false);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows, false);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows64, false);
 						pi.SetCompatibleWithEditor(false);
@@ -293,8 +291,6 @@ class OVRPluginUpdater
 #else
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXUniversal, true);
 #endif
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel, true);
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel64, true);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows, false);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows64, false);
 						pi.SetCompatibleWithEditor(true);
@@ -311,8 +307,6 @@ class OVRPluginUpdater
 #else
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXUniversal, false);
 #endif
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel, false);
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel64, false);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows, true);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows64, false);
 						pi.SetCompatibleWithEditor(true);
@@ -329,8 +323,6 @@ class OVRPluginUpdater
 #else
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXUniversal, false);
 #endif
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel, false);
-						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneOSXIntel64, false);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows, false);
 						pi.SetCompatibleWithPlatform(BuildTarget.StandaloneWindows64, true);
 						pi.SetCompatibleWithEditor(true);

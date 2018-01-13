@@ -86,37 +86,6 @@ public class AudioManager : MonoBehaviour
         //_Music.volume = MusicVolume * MasterVolume;
     }
 
-
-    void OnLevelWasLoaded()
-    {
-        //Boss = false;
-        //switch (SceneManager.GetActiveScene().name)
-        //{
-        //    case "MainMenu":
-        //        _Music.clip = music["G_D_MainMenu_Music"];
-        //        break;
-        //    case "Level1":
-        //        _Music.clip = music["G_D_Level1_Music"];
-        //        break;
-        //    case "Level2":
-        //        _Music.clip = music["G_D_Level2_Music"];
-        //        break;
-        //    case "Level3":
-        //        _Music.clip = music["G_D_Level3_Music"];
-        //        break;
-        //    case "Level4":
-        //        _Music.clip = music["G_D_Level4_Music"];
-        //        break;
-        //    case "LevelSelect":
-        //        _Music.clip = music["G_D_LevelSelect_Music"];
-        //        break;
-        //    default:
-        //        return;
-        //}
-
-        //PlayMusic();
-    }
-
     public void PlayBossTheme()
     {
         //if (!Boss)

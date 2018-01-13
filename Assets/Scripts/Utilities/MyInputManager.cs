@@ -1,16 +1,10 @@
 ﻿using UnityEngine;
 
 
-public class MyInputManager : MonoBehaviour
-{
+public class MyInputManager : MonoBehaviour {
+
 
     [SerializeField] bool isOculusTouchConnected;
-
-    ////  Oculus Touch Properties
-    ////  Axis
-    //private Vector2 leftThumbstick;
-    //private Vector2 rightThumbstick;
-    ////  Buttons
 
 
     void Awake()
@@ -26,44 +20,12 @@ public class MyInputManager : MonoBehaviour
         }
     }
 
-
     public bool IsOculusTouchConnected()
     {
         return isOculusTouchConnected;
     }
 
-    #region Oculus Input
-    private void OculusInput()
-    {
-        // returns true if the primary button was pressed this frame.
-        bool a = OVRInput.GetDown(OVRInput.Button.One);     //  A
-        bool b = OVRInput.GetDown(OVRInput.Button.Two);     //  B
-        bool x = OVRInput.GetDown(OVRInput.RawButton.X);    //  X
-        bool y = OVRInput.GetDown(OVRInput.RawButton.Y);    //  Y
-
-        // returns a Vector2 of the thumbstick’s current state. 
-        // (X/Y range of -1.0f to 1.0f)
-        Vector2 primaryThumbstick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-        Vector2 secondaryThumbstick = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-
-        // returns true if the primary thumbstick is currently pressed (clicked as a button)
-        bool primaryStickClick = OVRInput.Get(OVRInput.Button.PrimaryThumbstick);
-        bool secondaryStickClick = OVRInput.Get(OVRInput.Button.SecondaryThumbstick);
-
-        // returns a float of the secondary (typically the Right) index finger trigger’s current state.  
-        // (range of 0.0f to 1.0f)
-        float leftIndexTrigger = OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger);
-        float secondaryIndexTrigger = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger);
-
-        // returns a float of the Hand Trigger’s current state on the Left Oculus Touch controller.
-        float leftHandTrigger = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.LTouch);
-
-        // returns a float of the Hand Trigger’s current state on the Right Oculus Touch controller.
-        float rightHandTrigger = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.RTouch);
-    }
-    #endregion
-
-    #region Xbox Input
+    #region Input
     public Vector2 GetLeftJoystickAxis()
     {
         Vector2 axis = Vector2.zero;

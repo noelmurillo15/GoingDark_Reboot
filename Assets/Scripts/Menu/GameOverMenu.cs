@@ -54,7 +54,7 @@ public class GameOverMenu : MonoBehaviour
             return;
                 
         //  Unload GameOver
-        SceneManager.UnloadScene("GameOver");
+        SceneManager.UnloadSceneAsync("GameOver");
 
         //  Get The Level Still Active
         string scenename = SceneManager.GetActiveScene().name;
