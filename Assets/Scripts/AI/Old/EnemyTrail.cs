@@ -18,7 +18,7 @@ public class EnemyTrail : MonoBehaviour
     {
         trails = GetComponentsInChildren<TrailRenderer>();
         numTrails = trails.Length;    
-        HealthInfo = GetComponent<IEnemy>().GetHealthData();
+        HealthInfo = GetComponent<EnemyMaster>().GetHealthData();
         CheckHealth(HealthInfo);
     }    
 

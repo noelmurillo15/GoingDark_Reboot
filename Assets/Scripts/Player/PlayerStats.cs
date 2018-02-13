@@ -41,7 +41,7 @@ public class PlayerStats : MonoBehaviour
     private void Awake()
     {
         rumbleIntesity = new Vector2(1f, 1f);
-        HealthData = new HealthProperties(100f, transform, true);
+        HealthData = new HealthProperties(100f, true);
 
         PlayerPrefs.SetInt("Credits", 125);
         startCredits = PlayerPrefs.GetInt("Credits");

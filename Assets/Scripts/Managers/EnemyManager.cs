@@ -2,11 +2,13 @@
 using GoingDark.Core.Enums;
 using System.Collections.Generic;
 
+
 public class EnemyManager : MonoBehaviour {
+
 
     #region Properties
     [SerializeField] GameDifficulty Difficulty;
-    [SerializeField] List<IEnemy> enemies = new List<IEnemy>();
+    [SerializeField] List<EnemyMaster> enemies = new List<EnemyMaster>();
 
     private int creditMultiplier;
     private Transform PlayerPosition;
@@ -14,7 +16,13 @@ public class EnemyManager : MonoBehaviour {
     #endregion
 
 
+
     void Start()
+    {
+        Initialize();
+    }
+
+    void Initialize()
     {
         switch (PlayerPrefs.GetString("Difficulty"))
         {
@@ -58,11 +66,29 @@ public class EnemyManager : MonoBehaviour {
     #endregion    
 
     #region Modifiers
-    public void AddEnemy(IEnemy enemy)
+    public void AddEnemy(EnemyMaster enemy)
     {
         enemies.Add(enemy);
     }
-    public void RemoveEnemy(IEnemy enemy)
+
+    public void AllEnemiesPatrol()
+    {
+        for (int x = 0; x < enemies.Count; x++)
+            enemies[x].AttackTarget = null;
+    }
+
+    void RandomAmmoDrop(Vector3 _pos)
+    {
+        if (Random.Range(1, 2) == 1)
+        {
+            GameObject go = poolmanager.GetAmmoDrop();
+            go.transform.position = _pos;
+            go.transform.rotation = Quaternion.identity;
+            go.SetActive(true);
+        }
+    }
+
+    public void RemoveEnemy(EnemyMaster enemy)
     {
         GameObject explosive = poolmanager.GetEnemyExplosion();
 
@@ -104,34 +130,6 @@ public class EnemyManager : MonoBehaviour {
         }
         PlayerPosition.SendMessage("UpdateCredits", creds);
         enemies.Remove(enemy);
-    }
-
-    public void AllEnemiesPatrol()
-    {
-        for (int x = 0; x < enemies.Count; x++)
-            enemies[x].GetStateManager().SetEnemyTarget(null);
-    }
-
-    public void PlayerSeen()
-    {
-
-    }
-    public void SendAlert(Vector3 enemypos)
-    {
-        object[] tempStorage = new object[2];
-        tempStorage[0] = PlayerPosition.position;
-        tempStorage[1] = enemypos;
-        BroadcastMessage("BroadcastAlert", tempStorage);
-    }
-    void RandomAmmoDrop(Vector3 _pos)
-    {
-        if (Random.Range(1, 2) == 1)
-        {
-            GameObject go = poolmanager.GetAmmoDrop();
-            go.transform.position = _pos;
-            go.transform.rotation = Quaternion.identity;
-            go.SetActive(true);
-        }
     }
     #endregion
 }

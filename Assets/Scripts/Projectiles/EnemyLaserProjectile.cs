@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using GoingDark.Core.Enums;
 
-public class EnemyLaserProjectile : MonoBehaviour
-{
+
+public class EnemyLaserProjectile : MonoBehaviour {
+
+
     #region Properties
     [SerializeField]
     public EnemyLaserType Type;
@@ -17,6 +19,8 @@ public class EnemyLaserProjectile : MonoBehaviour
     private Transform MyTransform;
     private ObjectPoolManager poolManager;
     #endregion
+
+
 
     void OnEnable()
     {

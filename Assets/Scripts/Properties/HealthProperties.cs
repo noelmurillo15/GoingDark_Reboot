@@ -10,6 +10,7 @@ public class HealthProperties
     public float MaxHealth;
 
     //  Enemy Data
+    private EnemyMaster enemyMaster;
     private Transform baseRef;
 
     //  Player Data
@@ -18,22 +19,31 @@ public class HealthProperties
     private Image HealthBar;
     #endregion
 
-    public HealthProperties(float _hp, Transform _ref)
+    /// <summary>
+    /// Contructor : Enemy
+    /// </summary>
+    /// <param name="_hp"></param>
+    /// <param name="_ref"></param>
+    public HealthProperties(float _hp, EnemyMaster _ref)
     {
         MaxHealth = _hp;
         Health = MaxHealth;
 
-        baseRef = _ref;
+        enemyMaster = _ref;
         isPlayer = false;
         isPlayerDead = false;
     }
-    public HealthProperties(float _hp, Transform _ref, bool _player)
+
+    /// <summary>
+    /// Contructor : Player
+    /// </summary>
+    /// <param name="_hp"></param>
+    /// <param name="_player"></param>
+    public HealthProperties(float _hp, bool _player)
     {
         Health = _hp;
         MaxHealth = _hp;
         isPlayerDead = false;
-
-        baseRef = _ref;
         isPlayer = _player;
         HealthBar = GameObject.Find("PlayerHealth").GetComponent<Image>();
     }
@@ -54,7 +64,10 @@ public class HealthProperties
     public void Damage(float _dmg)
     {
         if (_dmg <= 0)
+        {
+            Debug.LogError("No Damage!");
             return;
+        }
 
         Health -= _dmg;        
         if (isPlayer)
@@ -64,13 +77,28 @@ public class HealthProperties
             if (!isPlayerDead && Health <= 0f)
             {
                 isPlayerDead = true;
-                baseRef.SendMessage("Kill");
+                //  TODO : Death
             }         
         }
         else
         {
-            if(Health <= 0f)
-                baseRef.SendMessage("Kill");
+            if (Health <= 0f)
+            {
+                enemyMaster.CallEventEnemyDie();
+                return;
+            }
+
+            enemyMaster.CallEventEnemyGetHit();
+
+            if(Health <= (MaxHealth * .2f) && !enemyMaster.GetIsHealthCritical())
+            {
+                enemyMaster.CallEventEnemyLowHealth();
+                return;
+            }
+            if(enemyMaster.GetIsHealthCritical())
+            {
+                enemyMaster.CallEventEnemyHealthRecovered();
+            }
         }
     }
     #endregion

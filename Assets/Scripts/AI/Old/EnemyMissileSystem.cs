@@ -13,7 +13,7 @@ public class EnemyMissileSystem : MonoBehaviour
 
     private Transform MyTransform;
     private ObjectPoolManager poolManager;
-    private EnemyStateManager stateManager;
+    private EnemyStatePattern stateManager;
     #endregion
 
 
@@ -44,7 +44,7 @@ public class EnemyMissileSystem : MonoBehaviour
                 break;
         }
         MyTransform = transform;
-        stateManager = transform.GetComponentInParent<EnemyStateManager>();
+        stateManager = transform.GetComponentInParent<EnemyStatePattern>();
         poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
     }
 
@@ -53,13 +53,13 @@ public class EnemyMissileSystem : MonoBehaviour
         if (fireRate > 0f)
             fireRate -= Time.fixedDeltaTime;
 
-        if (stateManager.Target != null)
+        if (stateManager.MyAttackTarget != null)
             LockOn();
     }
 
     private void LockOn()
     {
-        Vector3 playerDir = stateManager.Target.position - MyTransform.position;
+        Vector3 playerDir = stateManager.MyAttackTarget.position - MyTransform.position;
         Vector3 direction = Vector3.RotateTowards(MyTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
         MyTransform.rotation = Quaternion.LookRotation(direction);
 

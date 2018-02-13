@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using GoingDark.Core.Enums;
 
+
 public class EnemyLaserSystem : MonoBehaviour {
+
 
     #region Properties
     [SerializeField]
@@ -13,8 +15,9 @@ public class EnemyLaserSystem : MonoBehaviour {
     private IEnemy enemyStats;
     private Transform MyTransform;
     private ObjectPoolManager poolManager;
-    private EnemyStateManager stateManager;
+    private EnemyStatePattern stateManager;
     #endregion
+
 
 
     void Start()
@@ -33,7 +36,7 @@ public class EnemyLaserSystem : MonoBehaviour {
         }
         MyTransform = transform;
         enemyStats = MyTransform.GetComponentInParent<IEnemy>();
-        stateManager = MyTransform.GetComponentInParent<EnemyStateManager>();
+        stateManager = MyTransform.GetComponentInParent<EnemyStatePattern>();
         poolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
     }
 
@@ -42,13 +45,13 @@ public class EnemyLaserSystem : MonoBehaviour {
         if (fireRate > 0f)
             fireRate -= Time.fixedDeltaTime;
 
-        if (stateManager.Target != null)
+        if (stateManager.myEnemyMaster.AttackTarget != null)
             LockOn();        
     }
 
     private void LockOn()
     {
-        Vector3 playerDir = stateManager.Target.position - MyTransform.position;
+        Vector3 playerDir = stateManager.myEnemyMaster.AttackTarget.position - MyTransform.position;
         Vector3 direction = Vector3.RotateTowards(MyTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
         MyTransform.rotation = Quaternion.LookRotation(direction);
 
@@ -59,7 +62,7 @@ public class EnemyLaserSystem : MonoBehaviour {
     public void Shoot()
     {
         fireRate = maxFireRate;
-        if (enemyStats.GetDebuffData() != Impairments.Stunned)
+        if (stateManager.myEnemyMaster.GetDebuffData() != Impairments.Stunned)
         {
             GameObject obj = poolManager.GetLaser(Type);
 

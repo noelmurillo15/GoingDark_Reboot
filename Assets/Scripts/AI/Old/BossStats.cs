@@ -1,22 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BossStats : MonoBehaviour
-{
-    private IEnemy stats;
+
+public class BossStats : MonoBehaviour {
+
+
+    private EnemyMaster enemyMaster;
 
     public int numOrbsActive;
     private int maxOrbs = 4;
 
-    [SerializeField]
-    private GameObject[] Orbs;
-    [SerializeField]
-    private GameObject[] burns;
+    [SerializeField] private GameObject[] Orbs;
+    [SerializeField] private GameObject[] burns;
 
 
     void Start()
     {
-        stats = GetComponent<IEnemy>();
+        enemyMaster = GetComponent<EnemyMaster>();
         burns[0].SetActive(false);
         burns[1].SetActive(false);
         burns[2].SetActive(false);
@@ -31,7 +31,7 @@ public class BossStats : MonoBehaviour
         numOrbsActive--;
         if (numOrbsActive <= 0)
         {
-            stats.GetShieldData().SetShieldActive(false);
+            enemyMaster.GetShieldData().SetShieldActive(false);
             numOrbsActive = maxOrbs;        
             Invoke("ShieldRegen", 10f);
         }
@@ -41,16 +41,16 @@ public class BossStats : MonoBehaviour
         for (int x = 0; x < numOrbsActive; x++)
             Orbs[x].SetActive(true);
 
-        stats.GetShieldData().SetShieldActive(true);
+        enemyMaster.GetShieldData().SetShieldActive(true);
     }
 
     private IEnumerator CheckHealth()
     {
         while (true)
         {
-            if (stats.GetHealthData() != null)
+            if (enemyMaster.GetHealthData() != null)
             {
-                float hp = stats.GetHealthData().Health / stats.GetHealthData().MaxHealth;
+                float hp = enemyMaster.GetHealthData().Health / enemyMaster.GetHealthData().MaxHealth;
 
                 if (hp <= .75f)
                     burns[0].SetActive(true);
