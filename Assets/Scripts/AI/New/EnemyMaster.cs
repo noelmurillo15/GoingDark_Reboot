@@ -1,8 +1,7 @@
 ﻿/// <summary>
-/// Going Dark Reboot
-/// EnemyMaster.cs
 /// 2/4/2018
-/// By: Allan Murillo
+/// Allan Murillo
+/// Going Dark Reboot
 /// </summary>
 using UnityEngine;
 using GoingDark.Core.Enums;
@@ -222,10 +221,20 @@ public class EnemyMaster : MonoBehaviour {
             Destroy(gameObject, 1f);
         }
     }
-    #endregion
 
-    #region Private Methods
-    void LoadEnemyDifficulty()
+	public void CallEventInBounds()
+	{
+		Debug.Log("Enemy is in bounds");
+	}
+
+	public void CallEventOutOfBounds()
+	{
+		Debug.Log("Enemy is out of bounds");
+	}
+	#endregion
+
+	#region Private Methods
+	void LoadEnemyDifficulty()
     {
         switch (PlayerPrefs.GetString("Difficulty"))
         {
