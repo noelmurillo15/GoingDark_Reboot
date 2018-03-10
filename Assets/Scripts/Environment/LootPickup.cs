@@ -15,7 +15,8 @@ public class LootPickup : MonoBehaviour
     {
         if (col.transform.CompareTag("Player"))
         {
-            playerStats.UpdateCredits(100);
+			//	TODO Credits
+            //playerStats.UpdateCredits(100);
             AudioManager.instance.PlayCollect();
             Destroy(gameObject);
         }

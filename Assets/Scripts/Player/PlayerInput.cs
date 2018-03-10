@@ -1,6 +1,8 @@
-﻿// GoingDarkReboot.V1
-//  Allan Noel Murillo
-
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
 using UnityEngine;
 using GoingDark.Core.Enums;
 
@@ -13,7 +15,6 @@ public class PlayerInput : MonoBehaviour {
     private SystemManager systems;
     private LaserSystem lasers;
     private MissileSystem missiles;
-    private MovementProperties movement;
     #endregion
 
 
@@ -23,7 +24,6 @@ public class PlayerInput : MonoBehaviour {
             Debug.LogError("InputManager Script is not attached");
 
         systems = GameObject.FindGameObjectWithTag("Systems").GetComponent<SystemManager>();
-        movement = GetComponent<PlayerMovement>().GetMoveData();
         Invoke("FindSystems", 2f);
     }
 
@@ -35,12 +35,18 @@ public class PlayerInput : MonoBehaviour {
 
     void Update() {
 
-        if (myInput.GetRightClick())
-            lasers.WeaponSwap();
+		if (myInput.GetRightClick())
+		{
+			//if(lasers == null)
+			//	lasers = systems.GetSystemScript(SystemType.Laser) as LaserSystem;
 
-        if (myInput.GetLeftClick()) {
-            if (missiles == null)
-                missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
+			lasers.WeaponSwap();
+		}
+
+		if (myInput.GetLeftClick())
+		{
+            //if (missiles == null)
+            //    missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
 
             missiles.WeaponSwap();
         }
@@ -54,10 +60,10 @@ public class PlayerInput : MonoBehaviour {
         if (myInput.GetYButton())
             systems.ActivateSystem(SystemType.Hyperdrive);
 
-        if (myInput.GetLeftBumper() || myInput.GetOculusLeftBumper() > .5f)
+        if (myInput.GetLeftBumper() || myInput.GetOculusLeftBumper() > .8f)
             systems.ActivateSystem(SystemType.Missile);
 
-        if (myInput.GetRightBumper() || myInput.GetOculusRightBumper() > .5f)
+        if (myInput.GetRightBumper() || myInput.GetOculusRightBumper() > .8f)
             systems.ActivateSystem(SystemType.Laser);
     }
 }

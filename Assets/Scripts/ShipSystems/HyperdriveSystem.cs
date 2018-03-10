@@ -4,7 +4,7 @@ public class HyperdriveSystem : ShipSystem
 {
 
     #region Properties
-    private PlayerMovement stats;
+    private PlayerStats stats;
     private GameObject particles;
         #endregion
 
@@ -12,7 +12,7 @@ public class HyperdriveSystem : ShipSystem
     void Start () {
         maxCooldown = 40f;
 
-        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
         particles = transform.GetChild(0).gameObject;
         particles.SetActive(false);
     }
@@ -30,7 +30,7 @@ public class HyperdriveSystem : ShipSystem
     #region Private Methods
     public void InitializeHyperdriveSequence() {
         DeActivate();
-        stats.boostActive = true;
+        //stats.GetMoveData().boostActive = true;
         particles.SetActive(true);
         Invoke("StopHyperdrive", 10f);
     }
@@ -40,10 +40,10 @@ public class HyperdriveSystem : ShipSystem
         if(IsInvoking("StopHyperdrive"))
             CancelInvoke("StopHyperdrive");
 
-        stats.boostActive = false;
+        //stats.GetMoveData().boostActive = false;
         particles.SetActive(false);
-        stats.GetMoveData().SetBoost(1f);
-        stats.GetMoveData().SetAccel(20f);
+        //stats.GetMoveData().SetBoost(1f);
+        //stats.GetMoveData().SetAccel(20f);
     }
     #endregion
 }

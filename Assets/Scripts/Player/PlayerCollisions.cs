@@ -1,19 +1,24 @@
-﻿using UnityEngine;
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
+using UnityEngine;
+using GoingDark.Core.Enums;
+
 
 public class PlayerCollisions : MonoBehaviour
 {
 
     private float padding;
     private PlayerStats stats;
-    private PlayerMovement move;
     private MovementProperties movedata;
 
     void Awake()
     {
         padding = 0f;
         stats = GetComponent<PlayerStats>();
-        move = GetComponent<PlayerMovement>();
-        movedata = move.GetMoveData();
+		movedata = stats.GetMoveData();
     }
 
     void LateUpdate()
@@ -22,26 +27,26 @@ public class PlayerCollisions : MonoBehaviour
             padding -= Time.deltaTime;
     }
 
-    void OnCollisionEnter(Collision hit)
+	void OnCollisionEnter(Collision hit)
     {
         if (padding <= 0f)
         {
             if (hit.transform.CompareTag("Asteroid"))
-            {       
-                stats.CrashHit(movedata.Speed / move.GetMoveData().MaxSpeed);
-                move.StopMovement();
-                padding = 5f;
+            {
+				Debug.Log("Crashed with Asteroid");
+				stats.CrashHit(movedata.speed / movedata.maxSpeed);
+                padding = 1f;
             }
             if (hit.transform.CompareTag("Enemy"))
-            {               
-                stats.CrashHit(move.GetMoveData().Speed / move.GetMoveData().MaxSpeed);
-                move.StopMovement();
-                padding = 5f;
+            {
+				Debug.Log("Crashed with Enemy");
+                stats.CrashHit(movedata.speed / movedata.maxSpeed);
+                padding = 1f;
             }
             if (hit.transform.CompareTag("Meteor"))
             {
-                padding = 5f;
-                move.StopMovement();
+				Debug.Log("Crashed with Meteor");
+				padding = 1f;
                 stats.Kill();
             }            
         }

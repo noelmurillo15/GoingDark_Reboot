@@ -1,18 +1,17 @@
 ﻿using UnityEngine;
+using ANM.Utilities;
 using GoingDark.Core.Enums;
+
 
 public class BossLaser : MonoBehaviour {
 
     [SerializeField]
     private GameObject Laser;
     
-    private ObjectPoolManager PoolManager;
-
     // Use this for initialization
     void Start () {
         Laser.SetActive(false);
         InvokeRepeating("Attack", 5f, 20f);
-        PoolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();                
 	}
 
     void Attack()
@@ -24,7 +23,7 @@ public class BossLaser : MonoBehaviour {
 
     void Fire()
     {
-        GameObject obj1 = PoolManager.GetLaser(EnemyLaserType.Cannon);
+        GameObject obj1 = ObjectPoolManager.Instance.GetProjectile(ProjectileType.Cannon);
 
         if (obj1 != null)
         {

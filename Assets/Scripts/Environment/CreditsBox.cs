@@ -20,7 +20,8 @@ public class CreditsBox : MonoBehaviour
     {
         if (col.transform.CompareTag("Player"))
         {
-            playerStats.UpdateCredits(100);
+			//	TODO Credits
+            //playerStats.UpdateCredits(100);
             AudioManager.instance.PlayCollect();
             Destroy(gameObject);
         }

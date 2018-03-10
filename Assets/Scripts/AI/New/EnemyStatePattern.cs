@@ -66,9 +66,9 @@ public class EnemyStatePattern : MonoBehaviour {
     void Awake()
     {
         Initialize();
-        myEnemyMaster.EventEnemyCriticalHealth += ActivateFleeState;
-        myEnemyMaster.EventEnemyRecovered += ActivatePatrolState;
-        myEnemyMaster.EventEnemyGetHit += ActivateGetHitState;
+        myEnemyMaster.EventCriticalHealth += ActivateFleeState;
+        myEnemyMaster.EventHealthRecovered += ActivatePatrolState;
+        myEnemyMaster.EventOnHit += ActivateGetHitState;
     }
 
     void Initialize()
@@ -93,16 +93,16 @@ public class EnemyStatePattern : MonoBehaviour {
 
     void OnDisable()
     {
-        myEnemyMaster.EventEnemyCriticalHealth -= ActivateFleeState;
-        myEnemyMaster.EventEnemyRecovered -= ActivatePatrolState;
-        myEnemyMaster.EventEnemyGetHit -= ActivateGetHitState;
+        myEnemyMaster.EventCriticalHealth -= ActivateFleeState;
+        myEnemyMaster.EventHealthRecovered -= ActivatePatrolState;
+        myEnemyMaster.EventOnHit -= ActivateGetHitState;
         StopAllCoroutines();
     }
 
     void FixedUpdate()
     {
         currentState.UpdateState();
-        myRigidbody.MovePosition(myTransform.position + myTransform.forward * Time.fixedDeltaTime * myEnemyMaster.GetMoveData().Speed);
+        myRigidbody.MovePosition(myTransform.position + myTransform.forward * Time.fixedDeltaTime * myEnemyMaster.GetMoveData().speed);
     }
 
     #region Accessors
@@ -150,7 +150,7 @@ public class EnemyStatePattern : MonoBehaviour {
         yield return new WaitForSeconds(.1f);
 
         isAttacking = false;
-        myEnemyMaster.CallEventEnemyRecovered();
+        myEnemyMaster.CallEventHealthRecovered();
         currentState = capturedState;
     }
 

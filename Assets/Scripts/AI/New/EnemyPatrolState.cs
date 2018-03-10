@@ -143,7 +143,7 @@ public class EnemyPatrolState : IEnemyState {
         else
         {
             enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
-            enemy.myTransform.rotation = Quaternion.Slerp(enemy.myTransform.rotation, Quaternion.Euler(targetRotation), Time.fixedDeltaTime / enemy.myEnemyMaster.GetMoveData().RotateSpeed);
+            enemy.myTransform.rotation = Quaternion.Slerp(enemy.myTransform.rotation, Quaternion.Euler(targetRotation), Time.fixedDeltaTime / enemy.myEnemyMaster.GetMoveData().rotateSpeed);
         }
     }
 

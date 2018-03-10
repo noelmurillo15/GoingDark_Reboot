@@ -1,110 +1,119 @@
-﻿// GoingDarkReboot.V1
-//  Allan Noel Murillo
-
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
 using UnityEngine;
+using ANM.Utilities;
 using GoingDark.Core.Enums;
-using UnityEngine.UI;
 
 
 public class LaserSystem : ShipSystem {
 
-    #region Properties
-    [SerializeField]
-    public LaserType Type;
-    [SerializeField]
-    public Transform Gun1;
-    [SerializeField]
-    public Transform Gun2;
+
+	#region Properties
+	[System.Serializable]
+	public struct Laser
+	{
+		public ProjectileType type;
+		public float maxFireRate;
+
+		public void Initialize(ProjectileType _type)
+		{
+			type = _type;
+			maxFireRate = .2f;
+		}
+	}
+
+	[SerializeField] bool isPlayerControlled = false;
+	[SerializeField] Laser[] lasers = new Laser[2];
+	[SerializeField] int currType = 0;
+	[SerializeField] Transform gun1;
+	[SerializeField] Transform gun2;
+	[SerializeField] LaserSystemUI playerUI;
+	[SerializeField] bool flip;
+	[SerializeField] bool singleBarrel;
+
+	Transform myTransform;
+	#endregion
 
 
-    private bool flip;
-    private Vector2 rumble;
-    private LaserOverheat laser_overheat;
-    private ObjectPoolManager PoolManager;
-    private Text typeTxt;
-    private Transform MyTransform;
-    private Transform leap;
-    #endregion
+	void Start()
+	{
+		flip = false;
+		currType = 0;
+		myTransform = transform;
 
+		if (gun2 == null)
+			singleBarrel = true;
 
-    void Start()
-    {
-        flip = false;
-        maxCooldown = .25f;
-        Type = LaserType.Basic;
-        rumble = new Vector2(.2f, .2f);
-        laser_overheat = GetComponent<LaserOverheat>();
-        PoolManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
+		if (transform.root.GetComponent<LaserSystemUI>() != null)
+		{
+			isPlayerControlled = true;
+			playerUI = transform.root.GetComponent<LaserSystemUI>();
+			for (int i = 0; i < 2; i++)
+				lasers[i].Initialize(ProjectileType.BasicLaser + i);
 
-        leap = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        MyTransform = transform;
+			maxCooldown = lasers[currType].maxFireRate;
+		}
+	}
 
-        typeTxt = GameObject.Find("LaserChoice").GetComponent<Text>();
-        typeTxt.text = "BasicLaser";
-        typeTxt.color = Color.cyan;
-    }
+	void FixedUpdate()
+	{
+		if (isPlayerControlled)
+		{
+			if (Activated)
+				ShootGun();
 
-    void FixedUpdate() {
-        if (!laser_overheat.GetOverheat())
-            if (Activated)
-                ShootGun();
+			if (cooldown > 0f)
+				cooldown -= Time.deltaTime;
+		}
+		else
+		{
 
-        MyTransform.rotation = leap.rotation;
-    }
+		}
+	}
 
-    public void ShootGun()
-    {
-        DeActivate();
-        
-        GameObject laser = PoolManager.GetLaser(Type);
-        switch (Type)
-        {
-            case LaserType.Basic:
-                //laser_overheat.UpdateGauge(-10f);
-                AudioManager.instance.PlayLaser();            
-                break;
+	private void LockOn(Transform target)
+	{
+		Debug.Log("Locking On");
+		Vector3 playerDir = target.position - myTransform.position;
+		Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
+		myTransform.rotation = Quaternion.LookRotation(direction);
 
-            case LaserType.Charged:
-                //laser_overheat.UpdateGauge(-20f);
-                AudioManager.instance.PlayChargeLaser();
-                break;
-        }
+		ShootGun();
+	}
 
-        if (flip)
-        {
-            laser.transform.position = Gun1.position;
-            laser.transform.rotation = Gun1.rotation;
-        }
-        else
-        {
-            laser.transform.position = Gun2.position;
-            laser.transform.rotation = Gun2.rotation;
-        }
+	public void ShootGun()
+	{
+		DeActivate();
+		flip = !flip;
+		GameObject laser = ObjectPoolManager.Instance.GetProjectile(ProjectileType.BasicLaser + currType);
+		if (flip && !singleBarrel)
+		{
+			laser.transform.position = gun1.position;
+			laser.transform.rotation = gun1.rotation;
+		}
+		else if (!singleBarrel)
+		{
+			laser.transform.position = gun2.position;
+			laser.transform.rotation = gun2.rotation;
+		}
+		else
+		{
+			laser.transform.position = gun1.position;
+			laser.transform.rotation = gun1.rotation;
+		}
+		laser.SetActive(true);
+	}
 
-        flip = !flip;
-        laser.SetActive(true);
-        //controller.AddRumble(maxCooldown - .05f, rumble);
-    }
+	public void WeaponSwap()
+	{
+		currType++;
+		if (currType == (int)ProjectileType.LaserEnd - (int)ProjectileType.BasicLaser)
+			currType = 0;
 
-    public void WeaponSwap()
-    {
-        int curr = (int)(Type + 1);
-        if (curr == (int)LaserType.NumberOfType)
-            curr = 0;
-
-        Type = (LaserType)curr;
-        switch (Type)
-        {
-            case LaserType.Basic:
-                maxCooldown = .25f;
-                typeTxt.text = "BasicLaser";
-                typeTxt.color = Color.cyan;
-                break;
-            case LaserType.Charged:
-                maxCooldown = .5f;
-                typeTxt.text = "ChargeLaser";
-                typeTxt.color = Color.magenta;
-                break;
-        }
-    }
+		if (isPlayerControlled)
+			playerUI.LaserSwap(lasers[currType]);
+	}
 }

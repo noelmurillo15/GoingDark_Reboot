@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
+using UnityEngine;
 
 
 public class MyInputManager : MonoBehaviour {

@@ -27,7 +27,7 @@ public class EnemyTrail : MonoBehaviour
         while (true)
         {
             int col = 0;
-            float _hp = HealthInfo.Health / HealthInfo.MaxHealth;            
+            float _hp = HealthInfo.health / HealthInfo.maxHealth;            
 
             if (_hp > .75f)
                 col = 0;            

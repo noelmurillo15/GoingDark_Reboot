@@ -97,11 +97,9 @@ public class EnemyAttackState : IEnemyState {
         {
             ToAlertState();
             return;
-        }
-        
+        }        
         if (TargetInRange(enemy.MyAttackTarget.position, enemy.attackRange))
         {
-            Debug.Log("Enemy Lasers Active");
             enemy.myRangedWeapon.SetActive(true);
         }
         else

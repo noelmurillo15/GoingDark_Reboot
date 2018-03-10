@@ -1,5 +1,8 @@
-﻿// Allan Murillo
-// Going Dark Reboot 
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
 
 
 namespace GoingDark.Core.Enums {
@@ -13,72 +16,8 @@ namespace GoingDark.Core.Enums {
         Nightmare
     }
 
-    #region Debuffs
-    public enum Impairments
-    {
-        None,
-        Slowed,
-        Stunned,
-    }
-    #endregion
-
-    #region Store
-    public enum Items
-    {
-        BasicMissile,
-        ShieldBreakMissile,
-        ChromaticMissile,
-        EMPMissile,
-        LaserPowerUpgrade,
-        Laser2PowerUpgrade,
-        HealthUpgrade,
-        ShieldUpgrade,
-    }
-
-    public struct Item
-    {
-        public string ItemName;
-        public int ItemPrice;
-        public Items Type;
-    }
-    #endregion
-
-    #region Projectiles
-    public enum MissileType
-    {
-        Basic,
-        Emp,
-        ShieldBreak,
-        Chromatic,
-        NumberOfType        
-    }
-    public enum LaserType
-    {
-        Basic,
-        Charged,
-        NumberOfType
-    }
-    #endregion
-
-    #region Enemies
-    public enum EnemyMissileType
-    {
-        Basic,
-        Slow,
-        Emp,
-        Guided,
-        Sysrupt,
-        Nuke,
-        ShieldBreak
-    }
-    public enum EnemyLaserType
-    {
-        Basic,
-        Charged,
-        MiniCannon,
-        Cannon
-    }
-    public enum EnemyTypes
+	#region Enemies
+	public enum EnemyTypes
     {
         None,
         Basic,
@@ -102,6 +41,43 @@ namespace GoingDark.Core.Enums {
         Attack,
     }    
     #endregion
+
+    #region Debuffs
+    public enum Impairments
+    {
+        None,
+        Slowed,
+        Stunned,
+		Enflamed,
+		Sysrupt,
+		ShieldBreak,
+    }
+    #endregion
+
+    #region Projectiles
+	public enum ProjectileType
+	{
+		//	Missiles
+		BasicMissile,
+		AdvancedMissile,
+		ShieldBreakMissile,
+		ChromaticMissile,
+		SysruptMissile,
+		FlameMissile,
+		SlowMissile,
+		EmpMissile,
+		MissileEnd,
+
+		//	Laser
+		BasicLaser,
+		ChargedLaser,
+		LaserEnd,
+
+		//	Boss
+		MiniCannon,
+		Cannon,
+	}
+	#endregion
 
     #region Ship Systems
     public enum SystemType

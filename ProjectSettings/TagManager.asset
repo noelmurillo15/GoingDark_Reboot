@@ -20,6 +20,9 @@ TagManager:
   - Asteroid
   - Hyperdrive
   - Cloak
+  - Loot
+  - Laser
+  - Missile
   layers:
   - Default
   - TransparentFX
@@ -35,10 +38,10 @@ TagManager:
   - Enemies
   - Projectile
   - LeapMotion
-  - Ship
+  - 
   - Raycast
   - Explosion
-  - 
+  - Destructable
   - 
   - 
   - 

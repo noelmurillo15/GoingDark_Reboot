@@ -50,7 +50,7 @@ public class BossStats : MonoBehaviour {
         {
             if (enemyMaster.GetHealthData() != null)
             {
-                float hp = enemyMaster.GetHealthData().Health / enemyMaster.GetHealthData().MaxHealth;
+                float hp = enemyMaster.GetHealthData().health / enemyMaster.GetHealthData().maxHealth;
 
                 if (hp <= .75f)
                     burns[0].SetActive(true);

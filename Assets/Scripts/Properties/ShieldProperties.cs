@@ -1,103 +1,87 @@
-﻿using System;
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
+using System;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 [Serializable]
-public class ShieldProperties
-{
-    #region Properties
-    public GameObject ShieldGameobject;
-    public bool Active { get; private set; }
-    public float Health { get; private set; }
-    public float MaxHealth { get; private set; }
+public class ShieldProperties {
 
-    //  Player Data
-    public bool isPlayer;
-    private Image ShieldBar;
+
+	#region Variables
+	public GameObject ShieldGameobject;
+	public bool active;
+	public float health;
+	public float maxHealth;
     #endregion
 
-    public ShieldProperties(GameObject _shield, float shieldHP)
-    {
-        isPlayer = false;
-        ShieldGameobject = _shield;
-        Active = true;
-        MaxHealth = shieldHP;
-        Health = MaxHealth;
-        ShieldBar = null;    
-    }
-    public ShieldProperties(GameObject _shield, float shieldHP, bool _player)
-    {
-        isPlayer = _player;
 
-        if (_shield == null)
-            Debug.LogError("Could not find player shield");        
 
+	/// <summary>
+	/// Constructor : Enemy
+	/// </summary>
+	/// <param name="_shield"></param>
+	/// <param name="shieldHP"></param>
+    public ShieldProperties(float shieldHP, GameObject _shield)
+    {
+        active = true;
+        health = shieldHP;
+        maxHealth = shieldHP;
         ShieldGameobject = _shield;
-        Active = true;
-        MaxHealth = shieldHP;
-        Health = MaxHealth;
-        ShieldBar = GameObject.Find("PlayerShield").GetComponent<Image>();
-    }
+	}
 
     #region Accessors
     public bool GetShieldActive()
     {
-        return Active;
+        return active;
     }
     #endregion
 
     #region Modifiers
     public void Heal(float _val)
     {
-        Health += _val;
-        if (Health > MaxHealth)
-            Health = MaxHealth;
-
-        UpdateShieldBar();
+		health = Mathf.Clamp(health + _val, 0f, maxHealth);
     }
 
     public void FullRestore()
     {
-        Active = true;
-        Health = MaxHealth;
+        active = true;
+        health = maxHealth;
         if(ShieldGameobject != null)
             ShieldGameobject.SetActive(true);
-        UpdateShieldBar();
     }
 
     public void SetShieldActive(bool flip)
     {
         if (!flip)
-            Health = 0f;                    
+            health = 0f;                    
         else        
-            Health = MaxHealth;
+            health = maxHealth;
 
-        Active = flip;
+        active = flip;
         ShieldGameobject.SetActive(flip);
     }
 
-    public void UpdateShieldBar()
+    public float ShieldHealthPercentage()
     {
-        ShieldBar.fillAmount = (Health / MaxHealth) * .5f;
+        return (health / maxHealth) * .5f;
     }
 
     public void Damage(float _val)
     {
-        if (Active)
+        if (active)
         {
-            Health -= _val;
-            if (Health <= 0f)
+            health -= _val;
+            if (health <= 0f)
             {
-                Health = 0f;
-                Active = false;
+                health = 0f;
+                active = false;
 
                 if (ShieldGameobject != null)
                     ShieldGameobject.SetActive(false);
-            }
-            if (isPlayer)
-            {
-                UpdateShieldBar();
-                AudioManager.instance.PlayShieldHit();
             }
         }
     }

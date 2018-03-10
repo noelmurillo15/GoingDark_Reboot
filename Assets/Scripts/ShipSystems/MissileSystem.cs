@@ -1,179 +1,147 @@
-﻿// GoingDarkReboot.V1
-//  Allan Noel Murillo
-
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
 using UnityEngine;
-using UnityEngine.UI;
+using ANM.Utilities;
 using GoingDark.Core.Enums;
 
 
 public class MissileSystem : ShipSystem {
 
-    #region Missile Data
-    private int[] Count = new int[4];
-    public MissileType Type { get; private set; }
 
-    // Missile Pools
-    private ObjectPoolManager poolmanager;
+	#region Variables
+	[System.Serializable]
+	public struct Missile
+	{
+		public ProjectileType type;
+		public int count;
+		public float maxFireRate;
 
-    //  Missile Display
-    private Text typeTxt;
-    private Text countTxt;
-    private Image missileSprite;
+		public void Initialize(ProjectileType _type)
+		{
+			type = _type;
+			count = 10;
+			maxFireRate = 1f;
+		}
+	}
 
-    // Misc
-    private Vector2 rumble;
-    private Hitmarker lockon;
-    private Transform MyTransform;
-    private Transform leap;
-    #endregion
+	[SerializeField] int currType = 0;
+	[SerializeField] bool isPlayerControlled = false;
+	[SerializeField] Missile[] missiles = new Missile[8];
 
-    void Start()
+	[SerializeField] Hitmarker lockon;
+	[SerializeField] Transform fireLocation;
+	[SerializeField] MissileSystemUI playerUI;
+
+    Transform myTransform;
+	#endregion
+
+
+
+	#region Unity Functions
+	void Start()
     {
-        Count[0] = 1000;
-        Count[1] = 1000;
-        Count[2] = 1000;
-        Count[3] = 1000;
+		maxCooldown = 1f;
+        myTransform = transform;
 
-        maxCooldown = 2.5f;
-        Type = MissileType.Basic;        
+		if (transform.root.GetComponent<MissileSystemUI>() != null)
+		{
+			isPlayerControlled = true;
+			playerUI = transform.root.GetComponent<MissileSystemUI>();
+			lockon = GameObject.Find("PlayerReticle").GetComponent<Hitmarker>();
+			for (int i = 0; i < (int)ProjectileType.MissileEnd - 1; i++)
+				missiles[i].Initialize((ProjectileType)i);
 
-        // Show missile count
-        typeTxt = GameObject.Find("MissileChoice").GetComponent<Text>();
-        countTxt = GameObject.Find("MissileCounter").GetComponent<Text>();
-        missileSprite = GameObject.Find("MissileImage").GetComponent<Image>();
-
-        typeTxt.text = "Basic";
-        typeTxt.color = Color.yellow;
-        countTxt.color = Color.yellow;
-        missileSprite.color = Color.yellow;
-
-        leap = GameObject.FindGameObjectWithTag("MainCamera").transform;
-
-        //Missile Ammo Data    
-        poolmanager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
-
-        MyTransform = transform;
-        rumble = new Vector2(.33f, .33f);
-        lockon = GameObject.Find("PlayerReticle").GetComponent<Hitmarker>();
-
-        CheckCount();
+			playerUI.UpdateUI(missiles[currType]);
+		}
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (Activated)
-            LaunchMissile();
+		if (isPlayerControlled)
+		{
+			if (Activated)
+				Launch();
 
-        if (cooldown > 0f)
-            cooldown -= Time.deltaTime;
+			if (cooldown > 0f)
+				cooldown -= Time.deltaTime;
+		}
+		else
+		{
 
-        MyTransform.rotation = leap.rotation;
-    }    
+		}
+    }
+	#endregion
 
-    public void AddMissile()
+	#region Accessors
+	public int GetMissileCount()
     {
-        int typemiss = Random.Range(0, 3);
+        return missiles[currType].count;
+    }
+	#endregion 
 
-        switch ((MissileType)typemiss)
+	#region Public Functions
+	public void Launch()
+    {
+		if (GetMissileCount() > 0)
         {
-            case MissileType.Basic:
-                Count[typemiss] += 5;
-                break;
-            case MissileType.Emp:
-                Count[typemiss] += 3;
-                break;
-            case MissileType.ShieldBreak:
-                Count[typemiss] += 3;
-                break;
-            case MissileType.Chromatic:
-                Count[typemiss] += 2;
-                break;
-        }
-
-        CheckCount();
+			DeActivate();
+			GetMissile();			
+			AudioManager.instance.PlayMissileLaunch();
+		}
     }
 
     public void WeaponSwap()
     {
-        int curr = (int)(Type + 1);
-        if (curr == (int)MissileType.NumberOfType)
-            curr = 0;
+		currType++;
+		if (currType == (int)ProjectileType.MissileEnd - 1)
+			currType = 0;
 
-        Type = (MissileType)curr;
-        switch (Type)
-        {
-            case MissileType.Basic:
-                typeTxt.text = "Basic";
-                countTxt.color = Color.yellow;
-                typeTxt.color = Color.yellow;
-                missileSprite.color = Color.yellow;
-                break;
-            case MissileType.Emp:
-                typeTxt.text = "Emp";
-                countTxt.color = Color.cyan;
-                typeTxt.color = Color.cyan;
-                missileSprite.color = Color.cyan;
-                break;
-            case MissileType.ShieldBreak:
-                typeTxt.text = "ShieldBreak";
-                countTxt.color = Color.red;
-                typeTxt.color = Color.red;
-                missileSprite.color = Color.red;
-                break;
-            case MissileType.Chromatic:
-                typeTxt.text = "Chromatic";
-                countTxt.color = Color.green;
-                typeTxt.color = Color.green;
-                missileSprite.color = Color.green;
-                break;
-        }
-
-        CheckCount();
-    }
-
-    public void LaunchMissile()
+		playerUI.MissileSwap(missiles[currType]);
+	}
+   
+	public void AddRandomMissile()
     {
-        if (Count[(int)Type] > 0)
-        {            
-            DeActivate();
+		missiles[currType].count += 10;
+		if (isPlayerControlled)
+			playerUI.UpdateUI(missiles[currType]);
+	}
+	#endregion
 
-            //controller.AddRumble(.5f, rumble);
+	#region Private Functions
+	void LockOn(Transform target)
+	{
+		Debug.Log("Locking On");
+		Vector3 playerDir = target.position - myTransform.position;
+		Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
+		myTransform.rotation = Quaternion.LookRotation(direction);
 
-            GameObject obj = poolmanager.GetMissile(Type);            
+		if (Vector3.Angle(playerDir, direction) <= .1f)
+			Launch();
+	}
 
-            if (obj != null)
-            {
-                obj.transform.position = transform.position;
-                obj.transform.rotation = transform.rotation;
-                obj.SetActive(true);
-                Count[(int)Type]--;
+	void GetMissile()
+	{
+		GameObject obj = ObjectPoolManager.Instance.GetProjectile((ProjectileType)currType);
+		if (obj != null)
+		{
+			missiles[currType].count--;
+			obj.transform.position = fireLocation.position;
+			obj.transform.rotation = fireLocation.rotation;
+			obj.SetActive(true);
+			obj.GetComponent<ProjectileMaster>().SetIsPlayerControlled(isPlayerControlled);
 
-                if (lockon.GetLockedOn())
-                    obj.SendMessage("LockedOn", lockon.GetRaycastHit());
-
-                AudioManager.instance.PlayMissileLaunch();
-                CheckCount();
-            }
-        }
-    }
-
-    public void CheckCount()
-    {
-        if (Count[(int)Type] == 0)
-        {
-            countTxt.text = "";
-            typeTxt.text = Type.ToString();
-            typeTxt.color = Color.grey;
-            countTxt.color = Color.grey;
-            missileSprite.color = Color.grey;
-            return;
-        }
-        
-        countTxt.text = "x: " + Count[(int)Type].ToString();
-    }
-
-    public int[] GetMissileCount()
-    {
-        return Count;
-    }
+			if (isPlayerControlled)
+			{
+				playerUI.UpdateUI(missiles[currType]);				
+				if (lockon.GetLockedOn())
+					obj.SendMessage("LockedOn", lockon.GetRaycastHit());
+			}
+		}
+		else
+			ObjectPoolManager.Instance.InitializeProjectile((ProjectileType)currType);
+	}	
+	#endregion
 }

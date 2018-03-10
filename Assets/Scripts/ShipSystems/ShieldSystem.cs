@@ -9,42 +9,42 @@ public class ShieldSystem : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        ShieldData = new ShieldProperties(gameObject, 100f);
+        ShieldData = new ShieldProperties(100f, gameObject);
     }
 
-    public void MissileHit(MissileProjectile missile)
-    {
-        if (ShieldData.GetShieldActive())
-        {
-            switch (missile.Type)
-            {
-                case MissileType.Basic:
-                    missile.Deflect();
-                    break;
-                case MissileType.Emp:
-                    missile.Deflect();
-                    break;
-                case MissileType.Chromatic:
-                    missile.Deflect();
-                    break;
-                case MissileType.ShieldBreak:
-                    ShieldData.Damage(100);
-                    missile.Kill();
-                    break;
-            }
-        }
-    }
+    //public void MissileHit(MissileProjectile missile)
+    //{
+    //    if (ShieldData.GetShieldActive())
+    //    {
+    //        switch (missile.Type)
+    //        {
+    //            case ProjectileType.BasicMissile:
+    //                missile.Deflect();
+    //                break;
+    //            case ProjectileType.EmpMissile:
+    //                missile.Deflect();
+    //                break;
+    //            case ProjectileType.ChromaticMissile:
+    //                missile.Deflect();
+    //                break;
+    //            case ProjectileType.ShieldBreakMissile:
+    //                ShieldData.Damage(100);
+    //                missile.Kill();
+    //                break;
+    //        }
+    //    }
+    //}
 
-    public void LaserHit(LaserProjectile laser)
-    {
-        switch (laser.Type)
-        {
-            case LaserType.Basic:
-                ShieldData.Damage(5f);
-                break;
-            case LaserType.Charged:
-                ShieldData.Damage(12.5f);
-                break;
-        }
-    }
+    //public void LaserHit(LaserProjectile laser)
+    //{
+    //    switch (laser.Type)
+    //    {
+    //        case ProjectileType.BasicLaser:
+    //            ShieldData.Damage(5f);
+    //            break;
+    //        case ProjectileType.ChargedLaser:
+    //            ShieldData.Damage(12.5f);
+    //            break;
+    //    }
+    //}
 }

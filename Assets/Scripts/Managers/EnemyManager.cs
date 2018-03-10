@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using ANM.Utilities;
 using GoingDark.Core.Enums;
 using System.Collections.Generic;
 
@@ -12,7 +13,6 @@ public class EnemyManager : MonoBehaviour {
 
     private int creditMultiplier;
     private Transform PlayerPosition;
-    private ObjectPoolManager poolmanager;
     #endregion
 
 
@@ -51,7 +51,6 @@ public class EnemyManager : MonoBehaviour {
         Debug.Log("Game Difficulty : " + Difficulty.ToString());
 
         PlayerPosition = GameObject.FindGameObjectWithTag("Player").transform;
-        poolmanager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<ObjectPoolManager>();
     }
 
     #region Accessors
@@ -81,7 +80,7 @@ public class EnemyManager : MonoBehaviour {
     {
         if (Random.Range(1, 2) == 1)
         {
-            GameObject go = poolmanager.GetAmmoDrop();
+            GameObject go = ObjectPoolManager.Instance.GetAmmoDrop();
             go.transform.position = _pos;
             go.transform.rotation = Quaternion.identity;
             go.SetActive(true);
@@ -90,7 +89,7 @@ public class EnemyManager : MonoBehaviour {
 
     public void RemoveEnemy(EnemyMaster enemy)
     {
-        GameObject explosive = poolmanager.GetEnemyExplosion();
+        GameObject explosive = ObjectPoolManager.Instance.GetEnemyExplosion();
 
         if (explosive != null)
         {

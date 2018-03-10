@@ -1,99 +1,108 @@
-﻿using System;
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
+using System;
 using UnityEngine;
+
 
 [Serializable]
 public class MovementProperties {
 
-    public float Speed;
-    public float Boost;
-    public float MaxSpeed;
-    public float RotateSpeed;
-    public float Acceleration;
 
-    public MovementProperties()
+	#region Variables
+	public float speed;
+	public float boost;
+	public float maxSpeed;
+	public float rotateSpeed;
+	public float acceleration;
+	#endregion
+
+
+
+	/// <summary>
+	/// Constructor : Default
+	/// </summary>
+	public MovementProperties()
     {
-
+		Reset();
+    }
+	/// <summary>
+	/// Constructor : Custom
+	/// </summary>
+	/// <param name="_speed"></param>
+	/// <param name="_boost"></param>
+	/// <param name="_maxspeed"></param>
+	/// <param name="_rotatespeed"></param>
+	/// <param name="_accel"></param>
+	public MovementProperties(float _speed, float _boost, float _maxspeed, float _rotatespeed, float _accel)
+    {
+        speed = _speed;
+        boost = _boost;
+        maxSpeed = _maxspeed;
+        acceleration = _accel;
+        rotateSpeed = _rotatespeed;
     }
 
-    public void Set(float _speed, float _boost, float _maxspeed, float _rotatespeed, float _accel)
-    {
-        Speed = _speed;
-        Boost = _boost;
-        MaxSpeed = _maxspeed;
-        Acceleration = _accel;
-        RotateSpeed = _rotatespeed;
-    }
-    public void SetSpeed(float val, bool overwrite)
+	#region Modifiers
+	public void Reset()
+	{
+		speed = 0f;
+		boost = 0f;
+		maxSpeed = 0f;
+		rotateSpeed = 0f;
+		acceleration = 0f;
+	}
+	
+	public void SetSpeed(float val, bool overwrite)
     {
         if(overwrite)
-            Speed = val;
+            speed = val;
         else
         {
-            Speed += val;
+            speed += val;
 
-            if (Speed > 100f * Boost)
-                Speed = 100f * Boost;
+            if (speed > 100f * boost)
+                speed = 100f * boost;
 
-            if (Speed < 0f)
-                Speed = 0f;
+            if (speed < 0f)
+                speed = 0f;
         }
     }
+
     public void SetSpeed(Vector2 _val)
     {
-        Speed += _val.x * Acceleration;
-        Speed += _val.y * Acceleration;
+        speed += _val.x * acceleration;
+        speed += _val.y * acceleration;
 
-        if (Speed > 100f * Boost)
-            Speed = 100f * Boost;
+        if (speed > 100f * boost)
+            speed = 100f * boost;
 
-        if (Speed < 0f)
-            Speed = 0f;
-    }
-    public void SetBoost(float _val)
-    {
-        Boost = _val;
-    }
-    public void SetMaxSpeed(float _val)
-    {
-        MaxSpeed = _val;
-    }
-    public void SetAccel(float _val)
-    {
-        Acceleration = _val;
-    }
-    public void SetRotateSpeed(float _val)
-    {
-        RotateSpeed = _val;
-    }
-
-    public void Reset()
-    {
-        Speed = 0f;
-        Boost = 0f;
-        MaxSpeed = 0f;
-        RotateSpeed = 0f;
-        Acceleration = 0f;
-    }
+        if (speed < 0f)
+            speed = 0f;
+    }      
 
     public void ChangeSpeed(float triggerVal)
     {
-        if (Speed < (MaxSpeed * Boost * triggerVal))
-            Speed += Time.fixedDeltaTime * Acceleration;
-        else if (Speed > (MaxSpeed * Boost * triggerVal) + .5f)
+        if (speed < (maxSpeed * boost * triggerVal))
+            speed += Time.fixedDeltaTime * acceleration;
+        else if (speed > (maxSpeed * boost * triggerVal) + .5f)
             DecreaseSpeed();
     }
     public void IncreaseSpeed()
     {
-        if (Speed < (MaxSpeed * Boost))
-            Speed += Time.fixedDeltaTime * Acceleration;
+        if (speed < (maxSpeed * boost))
+            speed += Time.fixedDeltaTime * acceleration;
         else
             DecreaseSpeed();
     }
     public void DecreaseSpeed()
     {
-        if (Speed > 1f)
-            Speed = Mathf.Lerp(Speed, 0f, Time.fixedDeltaTime * .5f);
+        if (speed > 1f)
+            speed = Mathf.Lerp(speed, 0f, Time.fixedDeltaTime * .5f);
         else
-            Speed = 0f;
+            speed = 0f;
     }
-} 
+	#endregion
+}

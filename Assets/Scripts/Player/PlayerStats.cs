@@ -1,27 +1,26 @@
-﻿using UnityEngine;
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
+using UnityEngine;
 using UnityEngine.UI;
-using GoingDark.Core.Enums;
 using System.Collections;
+using GoingDark.Core.Enums;
 using UnityEngine.SceneManagement;
 
-public class PlayerStats : MonoBehaviour
-{
-    #region Properties
-    public ShieldProperties ShieldData;
-    public HealthProperties HealthData;
-    public DebuffProperties DebuffData;
 
-    [SerializeField]
-    private Transform station;
-    //[SerializeField]
-    //private Text creditsDisplay;
+public class PlayerStats : ShipMaster {
 
-    private string diff;
-    private int startCredits;
-    private int deathCount = 0;
+
+	#region Variables
+	[Header("Player")]
+	[SerializeField] Transform station;
+	[SerializeField] Image healthBar;
+	[SerializeField] Image shieldBar;
+
+	private string diff;
     private float dmgMultiplier;
-    private Vector2 rumbleIntesity;
-    private const string display = "Credits : {0}";
 
     private CloakSystem cloak;
     private HyperdriveSystem hype;
@@ -30,24 +29,13 @@ public class PlayerStats : MonoBehaviour
     private MessageScript msgs;
     private DeathTransition deathTransition;
     #endregion
+    
 
-    public int DeathCount
+
+    void Awake()
     {
-        get { return deathCount; }
-        set { deathCount = value; }
-    }
-
-
-    private void Awake()
-    {
-        rumbleIntesity = new Vector2(1f, 1f);
-        HealthData = new HealthProperties(100f, true);
-
-        PlayerPrefs.SetInt("Credits", 125);
-        startCredits = PlayerPrefs.GetInt("Credits");
-        //creditsDisplay.text = string.Format(display, startCredits);
-
-        PlayerPrefs.SetString("Difficulty", "Medium");
+		EventProjectileHit += ProjectileHit;
+		PlayerPrefs.SetString("Difficulty", "Medium");
         diff = PlayerPrefs.GetString("Difficulty");         
         switch (diff)
         {
@@ -70,25 +58,21 @@ public class PlayerStats : MonoBehaviour
                 break;
         }
 
-        deathTransition = GameObject.FindGameObjectWithTag("LeapMount").GetComponent<DeathTransition>();
-        msgs = transform.GetComponentInChildren<MessageScript>();
-
+		
         systemManager = GameObject.FindGameObjectWithTag("Systems").GetComponent<SystemManager>();
-        Invoke("FindSystems", 1.5f);
+		Invoke("FindSystems", 1.5f);
     }
 
-    void FindSystems()
+	void FindSystems()
     {
-        cloak = systemManager.GetSystemScript(SystemType.Cloak) as CloakSystem;
+		base.Initialize(100f, GameObject.FindGameObjectWithTag("Shield"));
+		cloak = systemManager.GetSystemScript(SystemType.Cloak) as CloakSystem;
         hype = systemManager.GetSystemScript(SystemType.Hyperdrive) as HyperdriveSystem;
-        ShieldData = new ShieldProperties(GameObject.FindGameObjectWithTag("Shield"), 100f, true);
-    }
+		healthBar.fillAmount = GetHealthData().HealthPercentage();
+		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	}
 
-    #region Accessors
-    public int GetCredits()
-    {
-        return startCredits;
-    }
+	#region Accessors
     public CloakSystem GetCloak()
     {
         return cloak;
@@ -96,14 +80,6 @@ public class PlayerStats : MonoBehaviour
     public SystemManager GetSystemData()
     {
         return systemManager;
-    }
-    public ShieldProperties GetShieldData()
-    {
-        return ShieldData;
-    }
-    public DebuffProperties GetDebuffData()
-    {
-        return DebuffData;
     }
     #endregion
 
@@ -113,19 +89,14 @@ public class PlayerStats : MonoBehaviour
         if (cloak.GetCloaked())
             cloak.UnCloakShip();
     }
-    public void UpdateCredits(int add)
-    {
-        startCredits += add;
-        //creditsDisplay.text = string.Format(display, startCredits);
-    }
     public void HealShield()
     {
-        if (ShieldData.GetShieldActive())
-            ShieldData.Heal(2.5f);
+        if (myShieldData.GetShieldActive())
+            myShieldData.Heal(2.5f);
         else
             CancelInvoke("HealShield");
 
-        if (ShieldData.Health >= 100)
+        if (myShieldData.health >= 100)
             CancelInvoke("HealShield");
     }
     public void ShieldRecharge()
@@ -133,109 +104,162 @@ public class PlayerStats : MonoBehaviour
         if (IsInvoking("HealShield"))
             CancelInvoke("HealShield");
 
-        if(ShieldData.GetShieldActive())
+        if(myShieldData.GetShieldActive())
             InvokeRepeating("HealShield", 10f, .5f);
     }
     public void PlayerSlowed()
     {
         msgs.Slow(8f);
-        DebuffData.Slow(8f);
+        //myDebuffData.Slow(8f);
     }
     public void PlayerStunned()
     {              
         msgs.Stun(3f);
-        DebuffData.Stun(3f);
-    }    
-    #endregion
+        //myDebuffData.Stun(3f);
+    }
+	#endregion
 
-    #region Damage Calls   
-    public void CrashHit(float _speed)
+	#region Damage Calls   
+	public void ProjectileHit(ProjectileType _type, float baseDmg)
+	{
+		Debug.Log("Projectile Hit Called");
+		switch (_type)
+		{
+			case ProjectileType.BasicMissile:
+				Debug.Log("Player Hit by : BasicMissile");
+				break;
+			case ProjectileType.EmpMissile:
+				Debug.Log("Player Hit by : EmpMissile");
+				break;
+			case ProjectileType.ShieldBreakMissile:
+				Debug.Log("Player Hit by : ShieldBreakMissile");
+				break;
+			case ProjectileType.ChromaticMissile:
+				Debug.Log("Player Hit by : ChromaticMissile");
+				break;
+			case ProjectileType.SlowMissile:
+				Debug.Log("Player Hit by : SlowMissile");
+				break;
+			case ProjectileType.SysruptMissile:
+				Debug.Log("Player Hit by : SysruptMissile");
+				break;
+			case ProjectileType.BasicLaser:
+				Debug.Log("Player Hit by : BasicLaser");
+				break;
+			case ProjectileType.ChargedLaser:
+				Debug.Log("Player Hit by : ChargedLaser");
+				break;
+			default:
+				Debug.Log("Unknown Projectile");
+				break;
+		}
+	}
+
+	public void CrashHit(float _speed)
     {
         //controller.AddRumble(1f, rumbleIntesity);
-        HealthData.Damage(_speed * 20f);
-        UnCloak();
+        myHealthData.Damage(_speed * 20f);
+		healthBar.fillAmount = GetHealthData().HealthPercentage();
+		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		UnCloak();
     }    
-    private void EMPHit()
+
+    void EMPHit()
     {
         //controller.AddRumble(5f, rumbleIntesity);
         PlayerStunned();
-        UnCloak();      
+		
+		UnCloak();      
     }
-    private void SlowHit()
+    void SlowHit()
     {
         PlayerSlowed();
-        UnCloak();
+		healthBar.fillAmount = GetHealthData().HealthPercentage();
+		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		UnCloak();
     }
-    private void SysruptHit()
+    void SysruptHit()
     {
         systemManager.SystemDamaged();
-        UnCloak();
+		healthBar.fillAmount = GetHealthData().HealthPercentage();
+		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		UnCloak();
     }
     void SplashDmg()
     {
         //controller.AddRumble(.25f, rumbleIntesity);
-        if (ShieldData.GetShieldActive())
-            ShieldData.Damage(5 * dmgMultiplier);
+        if (myShieldData.GetShieldActive())
+            myShieldData.Damage(5 * dmgMultiplier);
         else
-            HealthData.Damage(5 * dmgMultiplier);                
-    }
-    private void ShieldHit(EnemyLaserProjectile laser)
-    {
-        //controller.AddRumble(.5f, rumbleIntesity);
-        ShieldData.Damage(laser.GetBaseDamage() * dmgMultiplier);        
-        laser.Kill();
-    }
-    private void ShieldHit(EnemyMissileProjectile missile)
-    {
-        //controller.AddRumble(.5f, rumbleIntesity);
-        ShieldData.Damage(missile.GetBaseDamage() * dmgMultiplier);        
-        missile.Kill();
-    }
-    private void LaserDmg(EnemyLaserProjectile laser)
-    {
-        UnCloak();
-        if (ShieldData.GetShieldActive())
-        {
-            ShieldHit(laser);
-            ShieldRecharge();
-            return;
-        }
-        //controller.AddRumble(1f, rumbleIntesity);
-        HealthData.Damage(laser.GetBaseDamage() * dmgMultiplier);
-        laser.Kill();                        
-    }
-    private void MissileDebuff(EnemyMissileProjectile missile)
-    {        
-        switch (missile.Type)
-        {
-            case EnemyMissileType.Slow:
-                SlowHit();
-                break;
-            case EnemyMissileType.Emp:
-                EMPHit();
-                break;
-            case EnemyMissileType.Sysrupt:
-                SysruptHit();
-                break;
-            case EnemyMissileType.ShieldBreak:
-                ShieldHit(missile);
-                break;
-        }
-        missile.Kill();
-    }
-    private void MissileDmg(EnemyMissileProjectile missile)
-    {
-        UnCloak();
-        if (ShieldData.GetShieldActive())
-        {
-            ShieldHit(missile);
-            ShieldRecharge();
-            return;
-        }
-        //controller.AddRumble(1f, rumbleIntesity);
-        HealthData.Damage(missile.GetBaseDamage() * dmgMultiplier);
-        missile.Kill();
-    }
+            myHealthData.Damage(5 * dmgMultiplier);
+		healthBar.fillAmount = GetHealthData().HealthPercentage();
+		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	}
+  //  void ShieldHit(LaserProjectile laser)
+  //  {
+  //      //controller.AddRumble(.5f, rumbleIntesity);
+  //      myShieldData.Damage(laser.GetBaseDmg() * dmgMultiplier);
+		//healthBar.fillAmount = GetHealthData().HealthPercentage();
+		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		//laser.Kill();
+  //  }
+  //  void ShieldHit(MissileProjectile missile)
+  //  {
+  //      //controller.AddRumble(.5f, rumbleIntesity);
+  //      myShieldData.Damage(missile.GetBaseDmg() * dmgMultiplier);
+		//healthBar.fillAmount = GetHealthData().HealthPercentage();
+		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		//missile.Kill();
+  //  }
+  //  void LaserDmg(LaserProjectile laser)
+  //  {
+  //      UnCloak();
+  //      if (myShieldData.GetShieldActive())
+  //      {
+  //          ShieldHit(laser);
+  //          ShieldRecharge();
+  //          return;
+  //      }
+  //      //controller.AddRumble(1f, rumbleIntesity);
+  //      myHealthData.Damage(laser.GetBaseDmg() * dmgMultiplier);
+		//healthBar.fillAmount = GetHealthData().HealthPercentage();
+		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		//laser.Kill();                        
+  //  }
+  //  void MissileDebuff(MissileProjectile missile)
+  //  {        
+  //      switch (missile.Type)
+  //      {
+  //          case ProjectileType.SlowMissile:
+  //              SlowHit();
+  //              break;
+  //          case ProjectileType.EmpMissile:
+  //              EMPHit();
+  //              break;
+  //          case ProjectileType.SysruptMissile:
+  //              SysruptHit();
+  //              break;
+  //          case ProjectileType.ShieldBreakMissile:
+  //              ShieldHit(missile);
+  //              break;
+  //      }
+  //      missile.Kill();
+  //  }
+  //  void MissileDmg(MissileProjectile missile)
+  //  {
+  //      UnCloak();
+  //      if (myShieldData.GetShieldActive())
+  //      {
+  //          ShieldHit(missile);
+  //          ShieldRecharge();
+  //          return;
+  //      }
+  //      //controller.AddRumble(1f, rumbleIntesity);
+  //      myHealthData.Damage(missile.GetBaseDmg() * dmgMultiplier);
+		//healthBar.fillAmount = GetHealthData().HealthPercentage();
+		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+		//missile.Kill();
+  //  }
     #endregion
 
     #region Death
@@ -243,29 +267,16 @@ public class PlayerStats : MonoBehaviour
     {
         Fade();
     }
-    public void Repair(int cost)
-    {
-        if ((startCredits - cost) > 0)
-        {
-            UpdateCredits(-cost);
-            HealthData.FullRestore();
-            ShieldData.FullRestore();
-            systemManager.FullSystemRepair();
-        }
-    }
+	public void Repair(int cost)
+	{
+		myHealthData.FullRestore();
+		myShieldData.FullRestore();
+		systemManager.FullSystemRepair();
+		healthBar.fillAmount = GetHealthData().HealthPercentage();
+		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	}
     public void Respawn()
     {
-        switch (diff)
-        {
-            case "Easy":
-                UpdateCredits(-200); break;
-            case "Medium":
-                UpdateCredits(-200 * 2); break;
-            case "Hard":
-                UpdateCredits(-200 * 3); break;
-            case "Nightmare":
-                UpdateCredits(-200 * 5); break;
-        }
         Repair(0);  
         GoToStation();
         if(hype != null)      
@@ -273,14 +284,13 @@ public class PlayerStats : MonoBehaviour
     }
     void GameOver()
     {
-        PersistentGameManager.Instance.SetPlayerCredits(startCredits);
         transform.root.GetComponent<EnemyManager>().AllEnemiesPatrol();
         transform.root.GetComponent<GameOver>().InitializeGameOverScene();
     }
     public void Kill()
     {
-        DeathCount += 1;
-        deathTransition.Death();
+		EventProjectileHit -= ProjectileHit;
+		deathTransition.Death();
         Invoke("GameOver", 1.5f);
     }
     public void FadeOut()

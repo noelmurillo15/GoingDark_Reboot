@@ -1,105 +1,76 @@
-﻿using System;
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
+using System;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 [Serializable]
-public class HealthProperties
-{
-    #region Properties
-    public float Health;
-    public float MaxHealth;
+public class HealthProperties {
 
-    //  Enemy Data
-    private EnemyMaster enemyMaster;
-    private Transform baseRef;
 
-    //  Player Data
-    public bool isPlayer;
-    public bool isPlayerDead;
-    private Image HealthBar;
-    #endregion
+	#region Variables
+	ShipMaster shipMaster;
+	public bool isDead;
+	public bool healthCritical;
+	public float health;
+	public float maxHealth;
+	#endregion
 
-    /// <summary>
-    /// Contructor : Enemy
-    /// </summary>
-    /// <param name="_hp"></param>
-    /// <param name="_ref"></param>
-    public HealthProperties(float _hp, EnemyMaster _ref)
-    {
-        MaxHealth = _hp;
-        Health = MaxHealth;
 
-        enemyMaster = _ref;
-        isPlayer = false;
-        isPlayerDead = false;
-    }
+	/// <summary>
+	/// Constructor : Player
+	/// </summary>
+	/// <param name="_hp"></param>
+	/// <param name="_player"></param>
+	public HealthProperties(float _hp, ShipMaster _ref)
+	{
+		isDead = false;
+		healthCritical = false;
 
-    /// <summary>
-    /// Contructor : Player
-    /// </summary>
-    /// <param name="_hp"></param>
-    /// <param name="_player"></param>
-    public HealthProperties(float _hp, bool _player)
-    {
-        Health = _hp;
-        MaxHealth = _hp;
-        isPlayerDead = false;
-        isPlayer = _player;
-        HealthBar = GameObject.Find("PlayerHealth").GetComponent<Image>();
-    }
+		health = _hp;
+		maxHealth = _hp;
+		shipMaster = _ref;
+	}
 
-    #region Modifiers
-    public void FullRestore()
-    {
-        isPlayerDead = false;
-        Health = MaxHealth;
-        UpdateHPBar();
-    }  
-    
-    public void UpdateHPBar()
-    {
-        HealthBar.fillAmount = (Health / MaxHealth) * .5f;
-    }  
+	#region Modifiers
+	public void Heal(float _hp)
+	{
+		health = Mathf.Clamp(health + _hp, 0f, maxHealth);
+		if(healthCritical)
+		{
+			if(HealthPercentage() > .1f)
+			{
+				healthCritical = false;
+			}
+		}
+	}
 
-    public void Damage(float _dmg)
-    {
-        if (_dmg <= 0)
-        {
-            Debug.LogError("No Damage!");
-            return;
-        }
+	public void Damage(float _dmg)
+	{
+		health = Mathf.Clamp(health - _dmg, 0f, maxHealth);
 
-        Health -= _dmg;        
-        if (isPlayer)
-        {
-            UpdateHPBar();
-            AudioManager.instance.PlayHit();
-            if (!isPlayerDead && Health <= 0f)
-            {
-                isPlayerDead = true;
-                //  TODO : Death
-            }         
-        }
-        else
-        {
-            if (Health <= 0f)
-            {
-                enemyMaster.CallEventEnemyDie();
-                return;
-            }
+		if(health <= 0f)
+		{
+			isDead = true;
+			shipMaster.CallEventDeath();
+		}
+		else if(HealthPercentage() <= .1f)
+		{
+			healthCritical = true;
+		}
+	}
 
-            enemyMaster.CallEventEnemyGetHit();
+	public void FullRestore()
+	{
+		health = maxHealth;
+	}
 
-            if(Health <= (MaxHealth * .2f) && !enemyMaster.GetIsHealthCritical())
-            {
-                enemyMaster.CallEventEnemyLowHealth();
-                return;
-            }
-            if(enemyMaster.GetIsHealthCritical())
-            {
-                enemyMaster.CallEventEnemyHealthRecovered();
-            }
-        }
-    }
-    #endregion
+	public float HealthPercentage()
+	{
+		return (health / maxHealth) * .5f;
+	}	
+	#endregion
 }

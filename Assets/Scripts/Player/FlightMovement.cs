@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 
+
 public class FlightMovement : MonoBehaviour
 {
 
     #region Properties
     public bool boostActive;
-    public MovementProperties MoveData;
+    public ShipMaster shipMaster;
 
 
     private Transform MyTransform;
@@ -16,29 +17,10 @@ public class FlightMovement : MonoBehaviour
 
     void Start()
     {
-
         OVRInput.GetActiveController();
 
-        if (OVRInput.IsControllerConnected(OVRInput.Controller.All))
-        {
-            Debug.Log("Oculus All Controller is Active");
-        }
-
-        if (OVRInput.IsControllerConnected(OVRInput.Controller.LTouch))
-        {
-            Debug.Log("Oculus Left Touch Controller is Active");
-        }
-
-        if (OVRInput.IsControllerConnected(OVRInput.Controller.RTouch))
-        {
-            Debug.Log("Oculus Right Touch Controller is Active");
-        }
-
-
         boostActive = false;
-        MyTransform = transform;
-        MoveData.Set(0f, 1f, 250f, 80f, 40f);
-
+        MyTransform = transform;        
         _audioInstance = AudioManager.instance;
         MyRigidbody = GetComponent<Rigidbody>();
     }
@@ -52,9 +34,9 @@ public class FlightMovement : MonoBehaviour
         Vector2 secndaryindextrigger = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
 
         if (lefttrigger > 0f)
-            MoveData.ChangeSpeed(lefttrigger);
+			GetMovementRef().ChangeSpeed(lefttrigger);
         else
-            MoveData.DecreaseSpeed();
+			GetMovementRef().DecreaseSpeed();
 
         Yaw(primaryindextrigger);
         Roll(secndaryindextrigger);
@@ -63,42 +45,42 @@ public class FlightMovement : MonoBehaviour
     }
 
     #region Accessors
-    public MovementProperties GetMoveData()
+    public MovementProperties GetMovementRef()
     {
-        return MoveData;
+        return shipMaster.GetMoveData();
     }
     #endregion
 
     #region Movement    
     public void StopMovement()
     {
-        MoveData.Speed = 0f;
+		GetMovementRef().SetSpeed(0f, true);
     }
     public void Yaw(Vector2 myInput)
     {
         if (myInput .x != 0f)
-            MyTransform.Rotate(Vector3.up * Time.deltaTime * (MoveData.RotateSpeed * myInput.x));
+            MyTransform.Rotate(Vector3.up * Time.deltaTime * (GetMovementRef().rotateSpeed * myInput.x));
     }
     public void Roll(Vector2 myInput)
     {
         if (myInput.x != 0f)
-            MyTransform.Rotate(Vector3.back * Time.deltaTime * (MoveData.RotateSpeed * myInput.x));
+            MyTransform.Rotate(Vector3.back * Time.deltaTime * (GetMovementRef().rotateSpeed * myInput.x));
     }
     public void Pitch(Vector2 myInput)
     {
         if (myInput.y != 0f)
-            MyTransform.Rotate(Vector3.right * Time.deltaTime * (MoveData.RotateSpeed * myInput.y));
+            MyTransform.Rotate(Vector3.right * Time.deltaTime * (GetMovementRef().rotateSpeed * myInput.y));
     }
     void Flight()
     {
-        if (MoveData.Speed <= 0f)
+        if (GetMovementRef().speed <= 0f)
             return;
 
         _audioInstance.PlayThruster();
 
-        MyRigidbody.AddForce(MyTransform.forward * MoveData.Speed, ForceMode.VelocityChange);
-        if (MyRigidbody.velocity.magnitude > MoveData.Speed)
-            MyRigidbody.velocity = MyRigidbody.velocity.normalized * MoveData.Speed;        
+        MyRigidbody.AddForce(MyTransform.forward * GetMovementRef().speed, ForceMode.VelocityChange);
+        if (MyRigidbody.velocity.magnitude > GetMovementRef().speed)
+            MyRigidbody.velocity = MyRigidbody.velocity.normalized * GetMovementRef().speed;        
     }
     #endregion    
 }

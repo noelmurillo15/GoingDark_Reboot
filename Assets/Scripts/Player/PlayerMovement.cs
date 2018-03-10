@@ -1,93 +1,82 @@
-﻿// GoingDarkReboot.V1
-//  Allan Noel Murillo
-
+﻿///<summary>
+/// 3/7/2018
+/// Allan Noel Murillo
+/// GoingDark_Reboot
+/// </summary>
 using UnityEngine;
 
 
 public class PlayerMovement : MonoBehaviour {
 
-    #region Properties
-    [SerializeField] MyInputManager myInput;
-    [SerializeField] float currentSpeedPercentage;
-    [SerializeField] MovementProperties MoveData;
 
-    public bool boostActive;
+	#region Properties
+	[SerializeField] MyInputManager myInput;
+	[SerializeField] float currentSpeedPercentage;
 
-    //  Cached Properties
-    private Transform MyTransform;
-    private AudioManager _audioInstance;
-    private Rigidbody MyRigidbody;
-    #endregion
+	public bool boostActive;
 
-
-    void Start()
-    {
-        MoveData.Set(0f, 1f, 100f, 60f, 20f);
-        currentSpeedPercentage = 0f;
-        boostActive = false;
-        MyTransform = transform;
-
-        _audioInstance = AudioManager.instance;
-        MyRigidbody = GetComponent<Rigidbody>();
-    }
-
-    void FixedUpdate()
-    {
-        //  Xbox 360 Controllers
-        MoveData.SetSpeed(myInput.GetLeftTriggerAxis(), false);
-        MoveData.SetSpeed(-(myInput.GetRightTriggerAxis()), false);
-
-        Yaw(myInput.GetLeftJoystickAxis());
-        Pitch(myInput.GetLeftJoystickAxis());
-        Roll(myInput.GetRightJoystickAxis());
+	//  Cached Properties
+	private ShipMaster moveRef;
+	private Transform MyTransform;
+	private AudioManager _audioInstance;
+	private Rigidbody MyRigidbody;
+	#endregion
 
 
-        if (boostActive) {
-            MoveData.Boost = 5f;
-            MoveData.Acceleration = 50f;
-        }
-        
-        Flight();
-    }
+	void Start()
+	{
+		boostActive = false;
+		currentSpeedPercentage = 0f;
 
-    #region Accessors
-    public MovementProperties GetMoveData()
-    {
-        return MoveData;
-    }
-    #endregion
+		MyTransform = transform;
+		moveRef = GetComponent<ShipMaster>();
+		_audioInstance = AudioManager.instance;
+		MyRigidbody = GetComponent<Rigidbody>();
+	}
 
-    #region Movement    
-    public void StopMovement()
-    {
-        MoveData.SetSpeed(0f, true);
-    }
+	void FixedUpdate()
+	{
+		moveRef.GetMoveData().SetSpeed(myInput.GetLeftTriggerAxis(), false);
+		moveRef.GetMoveData().SetSpeed(-(myInput.GetRightTriggerAxis()), false);
 
-    public void Yaw(Vector2 input)
-    {
-        MyTransform.Rotate(Vector3.up * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.x));        
-    }
-    public void Pitch(Vector2 input)
-    {
-        MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.y));
-    }
-    public void Roll(Vector2 input)
-    {
-        MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (MoveData.RotateSpeed * input.x));
-    }
+		Yaw(myInput.GetLeftJoystickAxis());
+		Pitch(myInput.GetLeftJoystickAxis());
+		Roll(myInput.GetRightJoystickAxis());
 
-    void Flight()
-    {
-        if (MoveData.MaxSpeed > 0f)
-            currentSpeedPercentage = MoveData.Speed / MoveData.MaxSpeed;
-        else
-            currentSpeedPercentage = 0f;
+		Flight();
+	}
 
-        _audioInstance.ThrusterVolume(currentSpeedPercentage);
+	#region Movement    
+	public void StopMovement()
+	{
+		moveRef.GetMoveData().SetSpeed(0f, true);
+	}
 
-        MyRigidbody.AddForce(MyTransform.forward * MoveData.Speed, ForceMode.VelocityChange);
-        if (MyRigidbody.velocity.magnitude > MoveData.Speed)
-            MyRigidbody.velocity = MyRigidbody.velocity.normalized * MoveData.Speed;        
-    }
-    #endregion    
+	float GetSpeedPercentage()
+	{
+		currentSpeedPercentage = moveRef.GetMoveData().speed / moveRef.GetMoveData().maxSpeed;
+		return currentSpeedPercentage;
+	}
+
+	void Yaw(Vector2 input)
+	{
+		MyTransform.Rotate(Vector3.up * Time.fixedDeltaTime * (moveRef.GetMoveData().rotateSpeed * input.x));
+	}
+	void Pitch(Vector2 input)
+	{
+		MyTransform.Rotate(Vector3.right * Time.fixedDeltaTime * (moveRef.GetMoveData().rotateSpeed * input.y));
+	}
+	void Roll(Vector2 input)
+	{
+		MyTransform.Rotate(Vector3.back * Time.fixedDeltaTime * (moveRef.GetMoveData().rotateSpeed * input.x));
+	}	
+
+	void Flight()
+	{
+		_audioInstance.ThrusterVolume(GetSpeedPercentage());
+		MyRigidbody.AddForce(MyTransform.forward * moveRef.GetMoveData().speed, ForceMode.VelocityChange);
+		if (MyRigidbody.velocity.magnitude > moveRef.GetMoveData().speed)
+			MyRigidbody.velocity = MyRigidbody.velocity.normalized * moveRef.GetMoveData().speed;
+	}
+	#endregion
 }
