@@ -35,18 +35,12 @@ namespace ANM.Utilities {
 		#region Missiles
 		ObjectPooling missileEmp = new ObjectPooling();
 		ObjectPooling missileSlow = new ObjectPooling();
-		//ObjectPooling missileNuke = new ObjectPooling();
 		ObjectPooling missileFlame = new ObjectPooling();
 		ObjectPooling missileBasic = new ObjectPooling();
 		ObjectPooling missileSysrupt = new ObjectPooling();
 		ObjectPooling missileAdvanced = new ObjectPooling();
 		ObjectPooling missileChromatic = new ObjectPooling();
 		ObjectPooling missileShieldBreak = new ObjectPooling();
-		//  Explosions
-		ObjectPooling explosionEmpMissile = new ObjectPooling();
-		ObjectPooling explosionBasicMissile = new ObjectPooling();
-		ObjectPooling explosionChromaticMissile = new ObjectPooling();
-		ObjectPooling explosionShieldBreakMissile = new ObjectPooling();
 		#endregion
 
 		#region Lasers
@@ -55,8 +49,6 @@ namespace ANM.Utilities {
 		ObjectPooling miniCannon = new ObjectPooling();
 		ObjectPooling cannon = new ObjectPooling();
 		//	Explosions
-		ObjectPooling explosionBasicLaser = new ObjectPooling();
-		ObjectPooling explosionChargedLaser = new ObjectPooling();
 		ObjectPooling explosionMiniCannon = new ObjectPooling();
 		ObjectPooling explosionCannon = new ObjectPooling();
 		#endregion
@@ -84,30 +76,6 @@ namespace ANM.Utilities {
 			}
 			//	References
 			myTransform = transform;
-			//	Missiles
-			missileEmp.Initialize(Resources.Load<GameObject>("Missiles/Emp"), 6, myTransform);
-			missileSlow.Initialize(Resources.Load<GameObject>("Missiles/Slow"), 6, myTransform);
-			missileBasic.Initialize(Resources.Load<GameObject>("Missiles/Basic"), 6, myTransform);
-			missileFlame.Initialize(Resources.Load<GameObject>("Missiles/Flame"), 6, myTransform);
-			missileSysrupt.Initialize(Resources.Load<GameObject>("Missiles/Sysrupt"), 6, myTransform);
-			missileAdvanced.Initialize(Resources.Load<GameObject>("Missiles/Advanced"), 6, myTransform);
-			missileChromatic.Initialize(Resources.Load<GameObject>("Missiles/Chromatic"), 6, myTransform);
-			missileShieldBreak.Initialize(Resources.Load<GameObject>("Missiles/ShieldBreak"), 6, myTransform);
-			//	Missile Explosions
-			explosionEmpMissile.Initialize(Resources.Load<GameObject>("Explosions/EmpExplosion"), 6, myTransform);
-			explosionBasicMissile.Initialize(Resources.Load<GameObject>("Explosions/BasicMissileExplosion"), 6, myTransform);
-			explosionChromaticMissile.Initialize(Resources.Load<GameObject>("Explosions/ChromaticExplosion"), 6, myTransform);
-			explosionShieldBreakMissile.Initialize(Resources.Load<GameObject>("Explosions/ShieldBreakExplosion"), 6, myTransform);
-			//	Lasers
-			laserBasic.Initialize(Resources.Load<GameObject>("Lasers/Basic"), 12, myTransform);
-			laserCharged.Initialize(Resources.Load<GameObject>("Lasers/Charged"), 12, myTransform);
-			miniCannon.Initialize(Resources.Load<GameObject>("Lasers/MiniCannon"), 12, myTransform);
-			cannon.Initialize(Resources.Load<GameObject>("Lasers/Cannon"), 12, myTransform);
-			//	Laser Explosions
-			explosionBasicLaser.Initialize(Resources.Load<GameObject>("Explosions/LaserExplosion"), 12, myTransform);
-			explosionChargedLaser.Initialize(Resources.Load<GameObject>("Explosions/ChargedLaserExplosion"), 12, myTransform);
-			explosionMiniCannon.Initialize(Resources.Load<GameObject>("Explosions/MiniCannonExplosion"), 12, myTransform);
-			explosionCannon.Initialize(Resources.Load<GameObject>("Explosions/BossLaserExplosion"), 12, myTransform);
 			//	Misc
 			ammoDrops.Initialize(Resources.Load<GameObject>("AmmoDrop"), 10, myTransform);
 			explosionpool.Initialize(Resources.Load<GameObject>("Explosions/EnemyExplosion"), 12, myTransform);
@@ -117,68 +85,57 @@ namespace ANM.Utilities {
 		#region Accessors
 		public GameObject InitializeProjectile(ProjectileType _type)
 		{
-			Debug.Log("Not enough Projectiles of type : " + _type + "... creating more in object pool.");
 			switch (_type)
 			{
 				case ProjectileType.BasicMissile:
-					missileBasic.Initialize(Resources.Load<GameObject>("Missiles/Basic"), 3, myTransform);
-					explosionBasicMissile.Initialize(Resources.Load<GameObject>("Explosions/BasicMissileExplosion"), 3, myTransform);
+					missileBasic.Initialize(Resources.Load<GameObject>("Missiles/BasicMissile"), 1, myTransform);
 					return missileBasic.GetPooledObject();
 
 				case ProjectileType.AdvancedMissile:
-					missileAdvanced.Initialize(Resources.Load<GameObject>("Missiles/Advanced"), 3, myTransform);
-					explosionBasicMissile.Initialize(Resources.Load<GameObject>("Explosions/BasicMissileExplosion"), 3, myTransform);
+					missileAdvanced.Initialize(Resources.Load<GameObject>("Missiles/AdvancedMissile"), 1, myTransform);
 					return missileAdvanced.GetPooledObject();
 
 				case ProjectileType.ShieldBreakMissile:
-					missileShieldBreak.Initialize(Resources.Load<GameObject>("Missiles/ShieldBreak"), 3, myTransform);
-					explosionShieldBreakMissile.Initialize(Resources.Load<GameObject>("Explosions/ShieldBreakExplosion"), 3, myTransform);
+					missileShieldBreak.Initialize(Resources.Load<GameObject>("Missiles/ShieldbreakMissile"), 1, myTransform);
 					return missileShieldBreak.GetPooledObject();
 
 				case ProjectileType.ChromaticMissile:
-					missileChromatic.Initialize(Resources.Load<GameObject>("Missiles/Chromatic"), 3, myTransform);
-					explosionChromaticMissile.Initialize(Resources.Load<GameObject>("Explosions/ChromaticExplosion"), 3, myTransform);
+					missileChromatic.Initialize(Resources.Load<GameObject>("Missiles/ChromaticMissile"), 1, myTransform);
 					return missileChromatic.GetPooledObject();
 
 				case ProjectileType.SysruptMissile:
-					missileSysrupt.Initialize(Resources.Load<GameObject>("Missiles/Sysrupt"), 3, myTransform);
-					explosionShieldBreakMissile.Initialize(Resources.Load<GameObject>("Explosions/BasicMissileExplosion"), 3, myTransform);
+					missileSysrupt.Initialize(Resources.Load<GameObject>("Missiles/SysruptMissile"), 1, myTransform);
 					return missileSysrupt.GetPooledObject();
 
 				case ProjectileType.FlameMissile:
-					missileFlame.Initialize(Resources.Load<GameObject>("Missiles/Flame"), 3, myTransform);
-					explosionBasicMissile.Initialize(Resources.Load<GameObject>("Explosions/BasicMissileExplosion"), 3, myTransform);
+					missileFlame.Initialize(Resources.Load<GameObject>("Missiles/FlameMissile"), 1, myTransform);
 					return missileFlame.GetPooledObject();
 
 				case ProjectileType.SlowMissile:
-					missileSlow.Initialize(Resources.Load<GameObject>("Missiles/Slow"), 3, myTransform);
-					explosionBasicMissile.Initialize(Resources.Load<GameObject>("Explosions/BasicMissileExplosion"), 3, myTransform);
+					missileSlow.Initialize(Resources.Load<GameObject>("Missiles/SlowMissile"), 1, myTransform);
 					return missileSlow.GetPooledObject();
 
 				case ProjectileType.EmpMissile:
-					missileEmp.Initialize(Resources.Load<GameObject>("Missiles/Emp"), 3, myTransform);
-					explosionEmpMissile.Initialize(Resources.Load<GameObject>("Explosions/EmpExplosion"), 3, myTransform);
+					missileEmp.Initialize(Resources.Load<GameObject>("Missiles/EmpMissile"), 1, myTransform);
 					return missileEmp.GetPooledObject();
 
 
 				case ProjectileType.BasicLaser:
-					laserBasic.Initialize(Resources.Load<GameObject>("Lasers/LaserBeam"), 10, myTransform);
-					explosionBasicLaser.Initialize(Resources.Load<GameObject>("Explosions/LaserExplosion"), 10, myTransform);
+					laserBasic.Initialize(Resources.Load<GameObject>("Lasers/BasicLaser"), 1, myTransform);
 					return laserBasic.GetPooledObject();
 
 				case ProjectileType.ChargedLaser:
-					laserCharged.Initialize(Resources.Load<GameObject>("Lasers/ChargedShot"), 10, myTransform);
-					explosionChargedLaser.Initialize(Resources.Load<GameObject>("Explosions/ChargedLaserExplosion"), 10, myTransform);
+					laserCharged.Initialize(Resources.Load<GameObject>("Lasers/ChargedLaser"), 1, myTransform);
 					return laserCharged.GetPooledObject();
 
 				case ProjectileType.MiniCannon:
-					miniCannon.Initialize(Resources.Load<GameObject>("Lasers/MiniBossLaser"), 5, myTransform);
-					explosionMiniCannon.Initialize(Resources.Load<GameObject>("Explosions/MiniCannonExplosion"), 5, myTransform);
+					miniCannon.Initialize(Resources.Load<GameObject>("Lasers/MiniCannon"), 1, myTransform);
+					explosionMiniCannon.Initialize(Resources.Load<GameObject>("Explosions/MiniCannonExplosion"), 1, myTransform);
 					return miniCannon.GetPooledObject();
 
 				case ProjectileType.Cannon:
-					cannon.Initialize(Resources.Load<GameObject>("Lasers/BossLaser"), 3, myTransform);
-					explosionCannon.Initialize(Resources.Load<GameObject>("Explosions/BossLaserExplosion"), 3, myTransform);
+					cannon.Initialize(Resources.Load<GameObject>("Lasers/Cannon"), 1, myTransform);
+					explosionCannon.Initialize(Resources.Load<GameObject>("Explosions/BossLaserExplosion"), 1, myTransform);
 					return cannon.GetPooledObject();
 
 				default:
@@ -191,77 +148,76 @@ namespace ANM.Utilities {
 
 		public GameObject GetProjectile(ProjectileType _type)
 		{
+			GameObject go = null;
 			switch (_type)
 			{
 				case ProjectileType.BasicMissile:
-					return missileBasic.GetPooledObject();
+					go = missileBasic.GetPooledObject();
+					break;
 				case ProjectileType.AdvancedMissile:
-					return missileAdvanced.GetPooledObject();
+					go = missileAdvanced.GetPooledObject();
+					break;
 				case ProjectileType.ShieldBreakMissile:
-					return missileShieldBreak.GetPooledObject();
+					go = missileShieldBreak.GetPooledObject();
+					break;
 				case ProjectileType.ChromaticMissile:
-					return missileChromatic.GetPooledObject();
+					go = missileChromatic.GetPooledObject();
+					break;
 				case ProjectileType.SysruptMissile:
-					return missileSysrupt.GetPooledObject();
+					go = missileSysrupt.GetPooledObject();
+					break;
 				case ProjectileType.FlameMissile:
-					return missileFlame.GetPooledObject();
+					go = missileFlame.GetPooledObject();
+					break;
 				case ProjectileType.SlowMissile:
-					return missileSlow.GetPooledObject();
+					go = missileSlow.GetPooledObject();
+					break;
 				case ProjectileType.EmpMissile:
-					return missileEmp.GetPooledObject();
+					go = missileEmp.GetPooledObject();
+					break;
 				case ProjectileType.MissileEnd:
 					Debug.LogError("Should not be here!");
 					break;
 
 				case ProjectileType.BasicLaser:
-					return laserBasic.GetPooledObject();
+					go = laserBasic.GetPooledObject();
+					break;
 				case ProjectileType.ChargedLaser:
-					return laserCharged.GetPooledObject();
+					go = laserCharged.GetPooledObject();
+					break;
 				case ProjectileType.LaserEnd:
 					Debug.LogError("Should not be here!");
 					break;
 
 				case ProjectileType.MiniCannon:
-					return miniCannon.GetPooledObject();
+					go = miniCannon.GetPooledObject();
+					break;
 				case ProjectileType.Cannon:
-					return cannon.GetPooledObject();
+					go = cannon.GetPooledObject();
+					break;
 
 				default:
 					Debug.LogError("Should not be here! " + _type);
 					break;
 			}
-			Debug.LogError("Should not reach this point!");
-			return null;
+
+			if (go == null)
+				go = InitializeProjectile(_type);
+
+			if (go == null)
+				Debug.LogError("WTF?");
+
+			return go;
 		}
 
 		public GameObject GetProjectileExplosion(ProjectileType _type)
 		{
 			switch (_type)
 			{
-				case ProjectileType.BasicMissile:
-					return explosionBasicMissile.GetPooledObject();
-				case ProjectileType.AdvancedMissile:
-					return explosionBasicMissile.GetPooledObject();
-				case ProjectileType.ShieldBreakMissile:
-					return explosionShieldBreakMissile.GetPooledObject();
-				case ProjectileType.ChromaticMissile:
-					return explosionChromaticMissile.GetPooledObject();
-				case ProjectileType.SysruptMissile:
-					return explosionBasicMissile.GetPooledObject();
-				case ProjectileType.FlameMissile:
-					return explosionBasicMissile.GetPooledObject();
-				case ProjectileType.SlowMissile:
-					return explosionBasicLaser.GetPooledObject();
-				case ProjectileType.EmpMissile:
-					return explosionEmpMissile.GetPooledObject();
 				case ProjectileType.MissileEnd:
 					Debug.LogError("Should not be here!");
 					break;
 
-				case ProjectileType.BasicLaser:
-					return explosionBasicLaser.GetPooledObject();
-				case ProjectileType.ChargedLaser:
-					return explosionChargedLaser.GetPooledObject();
 				case ProjectileType.LaserEnd:
 					Debug.LogError("Should not be here!");
 					break;

@@ -37,11 +37,15 @@ namespace ANM.Utilities {
 
 		public GameObject GetPooledObject()
 		{
-			for (int i = 0; i < poolList.Count; i++)
-				if (!poolList[i].activeInHierarchy)
-					return poolList[i];
-
-			Debug.Log("Pool ran out of : " + poolList[0].name);
+			if (poolList != null)
+			{
+				for (int i = 0; i < poolList.Count; i++)
+					if (!poolList[i].activeInHierarchy)
+						return poolList[i];
+			}
+			else
+				Debug.Log("ObjectPoolManager ran out of : " + poolList[0].name);
+			
 			return null;
 		}
 		#endregion

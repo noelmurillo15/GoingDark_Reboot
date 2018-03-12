@@ -13,12 +13,17 @@ public class ShipMaster : MonoBehaviour {
 
 	#region Variables
 	[Header("General")]
-	public float baseDamage = 10f;
-	[SerializeField] protected MovementProperties myMoveData;
-	[SerializeField] protected HealthProperties myHealthData;
-	[SerializeField] protected ShieldProperties myShieldData;
-	[SerializeField] protected DebuffProperties myDebuffData;
 	[SerializeField] protected Transform myAttackTarget;
+	[Space]
+	[SerializeField] protected MovementProperties myMoveData;
+	[Space]
+	[SerializeField] protected HealthProperties myHealthData;
+	[Space]
+	[SerializeField] protected ShieldProperties myShieldData;
+	[Space]
+	[SerializeField] protected DebuffProperties myDebuffData;
+
+	[SerializeField] GameObject stunnedPrefab;
 	#endregion
 
 	#region Events
@@ -43,10 +48,10 @@ public class ShipMaster : MonoBehaviour {
 	protected void Initialize(float hp, GameObject shield)
 	{
 		myAttackTarget = null;
-		myDebuffData = new DebuffProperties();
 		myHealthData = new HealthProperties(hp, this);
 		myShieldData = new ShieldProperties(hp, shield);
 		myMoveData = new MovementProperties(0f, 1f, 100f, 50f, 5f);
+		myDebuffData = gameObject.AddComponent<DebuffProperties>();
 	}
 	/// <summary>
 	/// Initializes Enemy
@@ -56,9 +61,9 @@ public class ShipMaster : MonoBehaviour {
 	protected void Initialize(float hp, bool shield)
 	{
 		myAttackTarget = null;
-		myDebuffData = new DebuffProperties();
 		myHealthData = new HealthProperties(hp, this);
-		myMoveData = new MovementProperties();
+		myMoveData = new MovementProperties(0f, 1f, 100f, .5f, 20f);
+		myDebuffData = gameObject.AddComponent<DebuffProperties>();
 		if (shield)
 			myShieldData = new ShieldProperties(hp, transform.GetChild(0).gameObject);
 	}	
@@ -110,28 +115,216 @@ public class ShipMaster : MonoBehaviour {
 
 	public void CallEventDeath()
 	{
-		Debug.Log("Event Death Called");
 		if (EventDeath != null)
 		{
-			if (GetComponent<EnemyTrail>() != null)
-				GetComponent<EnemyTrail>().Kill();
-
-			EventDeath();
-
-			//myManager.RemoveEnemy(this);
-			Destroy(gameObject, 1f);
+			Debug.Log("Death Event was succesful!");
+			EventDeath();		
 		}
 	}
 
 	public void CallEventProjectileHit(ProjectileType _type, float baseDmg, Impairments debuff)
 	{
-		Debug.Log("Event Projectile Hit Called");
 		if (EventProjectileHit != null)
 		{
+			Debug.Log("ProjectileHit Event was succesful!");
 			EventProjectileHit(_type, baseDmg);
-			myHealthData.Damage(baseDmg);
-			myDebuffData.ActivateDebuff(debuff, 5f);
+		}
+		if (debuff != Impairments.None)
+		{
+			myDebuffData.ActivateDebuff(debuff, 5f);	
 		}
 	}
 	#endregion
+
+	
+
+	//#region Player Damage Calls   
+	//public void ProjectileHit(ProjectileType _type, float baseDmg)
+	//{
+	//	Debug.Log("Projectile Hit Called");
+	//	switch (_type)
+	//	{
+	//		case ProjectileType.BasicMissile:
+	//			Debug.Log("Player Hit by : BasicMissile");
+	//			break;
+	//		case ProjectileType.EmpMissile:
+	//			Debug.Log("Player Hit by : EmpMissile");
+	//			break;
+	//		case ProjectileType.ShieldBreakMissile:
+	//			Debug.Log("Player Hit by : ShieldBreakMissile");
+	//			break;
+	//		case ProjectileType.ChromaticMissile:
+	//			Debug.Log("Player Hit by : ChromaticMissile");
+	//			break;
+	//		case ProjectileType.SlowMissile:
+	//			Debug.Log("Player Hit by : SlowMissile");
+	//			break;
+	//		case ProjectileType.SysruptMissile:
+	//			Debug.Log("Player Hit by : SysruptMissile");
+	//			break;
+	//		case ProjectileType.BasicLaser:
+	//			Debug.Log("Player Hit by : BasicLaser");
+	//			break;
+	//		case ProjectileType.ChargedLaser:
+	//			Debug.Log("Player Hit by : ChargedLaser");
+	//			break;
+	//		default:
+	//			Debug.Log("Unknown Projectile");
+	//			break;
+	//	}
+	//}
+	//public void CrashHit(float _speed)
+	//{
+	//	//controller.AddRumble(1f, rumbleIntesity);
+	//	myHealthData.Damage(_speed * 20f);
+	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
+	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	//	UnCloak();
+	//}
+
+
+	//void ShieldHit(LaserProjectile laser)
+	//{
+	//	//controller.AddRumble(.5f, rumbleIntesity);
+	//	myShieldData.Damage(laser.GetBaseDmg() * dmgMultiplier);
+	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
+	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	//	laser.Kill();
+	//}
+	//void ShieldHit(MissileProjectile missile)
+	//{
+	//	//controller.AddRumble(.5f, rumbleIntesity);
+	//	myShieldData.Damage(missile.GetBaseDmg() * dmgMultiplier);
+	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
+	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	//	missile.Kill();
+	//}
+	//void LaserDmg(LaserProjectile laser)
+	//{
+	//	UnCloak();
+	//	if (myShieldData.GetShieldActive())
+	//	{
+	//		ShieldHit(laser);
+	//		ShieldRecharge();
+	//		return;
+	//	}
+	//	//controller.AddRumble(1f, rumbleIntesity);
+	//	myHealthData.Damage(laser.GetBaseDmg() * dmgMultiplier);
+	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
+	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	//	laser.Kill();
+	//}
+	//void MissileDebuff(MissileProjectile missile)
+	//{
+	//	switch (missile.Type)
+	//	{
+	//		case ProjectileType.SlowMissile:
+	//			SlowHit();
+	//			break;
+	//		case ProjectileType.EmpMissile:
+	//			EMPHit();
+	//			break;
+	//		case ProjectileType.SysruptMissile:
+	//			SysruptHit();
+	//			break;
+	//		case ProjectileType.ShieldBreakMissile:
+	//			ShieldHit(missile);
+	//			break;
+	//	}
+	//	missile.Kill();
+	//}
+	//void MissileDmg(MissileProjectile missile)
+	//{
+	//	UnCloak();
+	//	if (myShieldData.GetShieldActive())
+	//	{
+	//		ShieldHit(missile);
+	//		ShieldRecharge();
+	//		return;
+	//	}
+	//	//controller.AddRumble(1f, rumbleIntesity);
+	//	myHealthData.Damage(missile.GetBaseDmg() * dmgMultiplier);
+	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
+	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
+	//	missile.Kill();
+	//}
+	//#endregion
+
+	//#region Enemy Damage Calls 
+	//void EMPHit()
+	//{
+	//	Debug.Log("Enemy Emp Hit");
+	//	stunnedPrefab.SetActive(true);
+	//	myImpairments = Impairments.Stunned;
+	//	Invoke("ResetDebuff", 5f);
+	//}
+
+	//void SplashDmg()
+	//{
+	//	if (myType != EnemyTypes.FinalBoss)
+	//	{
+	//		Debug.Log("Enemy Splash Dmg Hit");
+	//		if (hasShield && myShieldData.GetShieldActive())
+	//			myShieldData.Damage(myShieldData.maxHealth * .1f);
+	//		else
+	//			myHealthData.Damage(myHealthData.maxHealth * .1f);
+	//	}
+	//}
+	//public void CrashHit(float _speed)
+	//{
+	//	if (myType != EnemyTypes.FinalBoss)
+	//	{
+	//		Debug.Log("Enemy Crashed");
+
+	//		if (hasShield && myShieldData.GetShieldActive())
+	//			myShieldData.Damage(_speed * myShieldData.maxHealth * .5f);
+	//		else
+	//			myHealthData.Damage(_speed * myHealthData.maxHealth * .5f);
+	//	}
+	//}
+	//public void MissileHit(MissileProjectile missile)
+	//{
+	//	Debug.Log("Enemy Missile Hit");
+	//	if (hasShield && myShieldData.GetShieldActive())
+	//	{
+	//		if (myType != EnemyTypes.FinalBoss)
+	//		{
+	//			if (missile.Type == ProjectileType.ShieldBreakMissile)
+	//			{
+	//				myShieldData.Damage(100f);
+	//				missile.Kill();
+	//			}
+	//			else if (missile.Type == ProjectileType.EmpMissile)
+	//			{
+	//				EMPHit();
+	//				missile.Kill();
+	//			}
+	//			else
+	//				missile.Deflect();
+	//		}
+	//		else
+	//		{
+	//			missile.Deflect();
+	//		}
+	//	}
+	//	else
+	//	{
+	//		myHealthData.Damage(missile.GetBaseDmg());
+	//		missile.Kill();
+	//	}
+	//}
+	//public void LaserDmg(LaserProjectile laser)
+	//{
+	//	Debug.Log("Enemy Laser Hit");
+	//	if (hasShield && myShieldData.GetShieldActive())
+	//	{
+	//		if (myType != EnemyTypes.FinalBoss)
+	//			myShieldData.Damage(laser.GetBaseDmg());
+	//	}
+	//	else
+	//		myHealthData.Damage(laser.GetBaseDmg());
+
+	//	laser.Kill();
+	//}
+	//#endregion
 }

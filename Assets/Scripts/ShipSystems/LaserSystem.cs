@@ -63,7 +63,7 @@ public class LaserSystem : ShipSystem {
 		if (isPlayerControlled)
 		{
 			if (Activated)
-				ShootGun();
+				ShootLaser();
 
 			if (cooldown > 0f)
 				cooldown -= Time.deltaTime;
@@ -81,13 +81,18 @@ public class LaserSystem : ShipSystem {
 		Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
 		myTransform.rotation = Quaternion.LookRotation(direction);
 
-		ShootGun();
+		ShootLaser();
 	}
 
-	public void ShootGun()
+	public void ShootLaser()
 	{
 		DeActivate();
 		flip = !flip;
+		GetLaser();
+	}
+
+	private void GetLaser()
+	{
 		GameObject laser = ObjectPoolManager.Instance.GetProjectile(ProjectileType.BasicLaser + currType);
 		if (flip && !singleBarrel)
 		{
@@ -105,6 +110,7 @@ public class LaserSystem : ShipSystem {
 			laser.transform.rotation = gun1.rotation;
 		}
 		laser.SetActive(true);
+		laser.GetComponent<ProjectileMaster>().SetIsPlayerControlled(isPlayerControlled);
 	}
 
 	public void WeaponSwap()

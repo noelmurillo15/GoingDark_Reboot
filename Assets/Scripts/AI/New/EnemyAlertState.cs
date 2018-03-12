@@ -45,13 +45,17 @@ public class EnemyAlertState : IEnemyState {
 
     public void ToPatrolState()
     {
-        enemy.currentState = enemy.statePatrol;
-    }
+		Debug.Log("Alert -> Patrol");
+		enemy.currentState = enemy.statePatrol;
+		return;
+	}
 
     public void ToChaseState()
     {
-        enemy.currentState = enemy.stateChase;
-    }
+		Debug.Log("Alert -> Chase");
+		enemy.currentState = enemy.stateChase;
+		return;
+	}
 
     public void ToAlertState() {/* not used by Alert state */}
     public void ToAttackState() {/* not used by Alert state */ }
@@ -63,11 +67,9 @@ public class EnemyAlertState : IEnemyState {
     /// </summary>
     void Look()
     {        
-
         //  Check Max Sight Range
-        colliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.sightRange, enemy.enemyLayers);
         lastDetectionCount = detectionCount;
-
+        colliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.sightRange, enemy.enemyLayers);
         foreach (Collider col in colliders)
         {
             if (col.transform == enemy.myTransform)
@@ -77,7 +79,7 @@ public class EnemyAlertState : IEnemyState {
 
             lookAtTarget = new Vector3(col.transform.position.x, col.transform.position.y + offset, col.transform.position.z);
 
-            if (Physics.Linecast(enemy.myTransform.position, lookAtTarget, out hit, enemy.mySightLayers))
+            if (Physics.Linecast(enemy.myTransform.position, lookAtTarget, out hit, enemy.enemyLayers))
             {
                 foreach (string tags in enemy.enemyTags)
                 {
@@ -104,10 +106,8 @@ public class EnemyAlertState : IEnemyState {
             InformNearbyAllies();
             ToChaseState();
         }
-
         GoToLocationOfInterest();
     }
-
     /// <summary>
     /// 
     /// </summary>
@@ -142,7 +142,6 @@ public class EnemyAlertState : IEnemyState {
             }
         }
     }
-
     /// <summary>
     /// 
     /// </summary>

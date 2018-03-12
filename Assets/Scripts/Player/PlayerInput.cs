@@ -37,18 +37,18 @@ public class PlayerInput : MonoBehaviour {
 
 		if (myInput.GetRightClick())
 		{
-			//if(lasers == null)
-			//	lasers = systems.GetSystemScript(SystemType.Laser) as LaserSystem;
-
-			lasers.WeaponSwap();
+			if (lasers == null)
+				lasers = systems.GetSystemScript(SystemType.Laser) as LaserSystem;
+			else
+				lasers.WeaponSwap();
 		}
 
 		if (myInput.GetLeftClick())
 		{
-            //if (missiles == null)
-            //    missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
-
-            missiles.WeaponSwap();
+			if (missiles == null)
+				missiles = systems.GetSystemScript(SystemType.Missile) as MissileSystem;
+			else
+				missiles.WeaponSwap();
         }
 
         if (myInput.GetAButton())

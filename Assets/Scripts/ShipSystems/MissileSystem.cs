@@ -51,7 +51,7 @@ public class MissileSystem : ShipSystem {
 			isPlayerControlled = true;
 			playerUI = transform.root.GetComponent<MissileSystemUI>();
 			lockon = GameObject.Find("PlayerReticle").GetComponent<Hitmarker>();
-			for (int i = 0; i < (int)ProjectileType.MissileEnd - 1; i++)
+			for (int i = 0; i < (int)ProjectileType.MissileEnd; i++)
 				missiles[i].Initialize((ProjectileType)i);
 
 			playerUI.UpdateUI(missiles[currType]);
@@ -96,7 +96,7 @@ public class MissileSystem : ShipSystem {
     public void WeaponSwap()
     {
 		currType++;
-		if (currType == (int)ProjectileType.MissileEnd - 1)
+		if (currType == (int)ProjectileType.MissileEnd)
 			currType = 0;
 
 		playerUI.MissileSwap(missiles[currType]);
@@ -140,8 +140,6 @@ public class MissileSystem : ShipSystem {
 					obj.SendMessage("LockedOn", lockon.GetRaycastHit());
 			}
 		}
-		else
-			ObjectPoolManager.Instance.InitializeProjectile((ProjectileType)currType);
 	}	
 	#endregion
 }

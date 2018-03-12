@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
 
-//[System.Serializable]
-public class LaserBehaviour : ProjectileMaster {
+public class LaserBehaviour : ProjectileMaster
+{
 
 
 
@@ -23,6 +23,6 @@ public class LaserBehaviour : ProjectileMaster {
 
 	void FixedUpdate()
 	{
-		myTransform.Translate(0f, 0f, GetSpeed() * Time.fixedDeltaTime);
-	}
+		myTransform.Translate(0f, 0f, GetCurSpeed() * Time.fixedDeltaTime);
+	}	
 }

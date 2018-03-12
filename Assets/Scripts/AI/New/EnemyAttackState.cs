@@ -25,50 +25,75 @@ public class EnemyAttackState : IEnemyState {
     #region INpc Methods
     public void UpdateState()
     {
-        enemy.meshRendererFlag.material.color = Color.red;
-        Look();
-        TryAttack();
+		if(enemy.MyAttackTarget != null)
+		{
+			enemy.meshRendererFlag.material.color = Color.red;
+			Look();
+			TryAttack();
+		}
+		else
+		{
+			ToAlertState();
+		}
     }
 
     public void ToPatrolState()
     {
-        Debug.Log("Enemy Lasers De-activated : Patrol Mode");        
+        Debug.Log("Attack -> Patrol");        
         enemy.currentState = enemy.statePatrol;
+		return;
     }
 
     public void ToAlertState()
     {
-        Debug.Log("Enemy Lasers De-activated : Alert Mode");
+        Debug.Log("Attack -> Alert");
         enemy.currentState = enemy.stateAlert;
+		return;
     }
 
     public void ToChaseState()
     {
-        Debug.Log("Enemy Lasers De-activated : Chase Mode");
+        Debug.Log("Attack -> Chase");
         enemy.currentState = enemy.stateChase;
+		return;
     }
 
     public void ToAttackState() {/* not used by Attack state */ }
-    #endregion
+	#endregion
 
-    #region Ranged Attack
-    /// <summary>
-    /// Npc will detect if an enemy is in Ranged attack range and turn towards target &
-    /// Will go to Chase state if no enemies in Ranged attack range
-    /// </summary>
-    void Look()
+	#region Attack
+	/// <summary>
+	/// 
+	/// </summary>
+	bool TargetInRange(Vector3 attackTarget, float range)
+	{
+		float distanceToTarget = Vector3.Distance(attackTarget, enemy.myTransform.position);
+		return distanceToTarget <= range;
+	}
+	/// <summary>
+	/// 
+	/// </summary>
+	void TurnTowardsTarget()
+	{
+		//enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
+		Vector3 dir = enemy.locationOfInterest - new Vector3(enemy.myTransform.position.x - 250, enemy.myTransform.position.y, enemy.myTransform.position.z);
+		Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime * enemy.myEnemyMaster.GetMoveData().rotateSpeed, 0.0f);
+		enemy.myTransform.rotation = Quaternion.LookRotation(rotation);
+	}
+	/// <summary>
+	/// Npc will detect if an enemy is in Ranged attack range and turn towards target &
+	/// Will go to Chase state if no enemies in Ranged attack range
+	/// </summary>
+	void Look()
     {
-        if (enemy.MyAttackTarget == null)
-        {
-            ToAlertState();
-            return;
-        }
-
         Collider[] colliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.attackRange, enemy.enemyLayers);
-
         if (colliders.Length == 0)
         {
-            ToAlertState();
+			if (enemy.MyAttackTarget == null)
+				ToAlertState();
+			else
+				ToChaseState();
+
             return;
         }
 
@@ -80,24 +105,21 @@ public class EnemyAttackState : IEnemyState {
             }
             if (col.transform == enemy.MyAttackTarget)
             {
-                enemy.myRangedWeapon.SetActive(true);
-                TurnTowardsTarget();                
+				if(TargetInRange(enemy.MyAttackTarget.position, enemy.attackRange))
+				{
+					enemy.myRangedWeapon.SetActive(true);
+					TurnTowardsTarget();                
+				}
                 return;
             }
         }
     }
-
     /// <summary>
     /// Npc will detect if an enemy is in Ranged Attack range &
     /// will turn towards attack target
     /// </summary>
     void TryAttack()
-    {
-        if (enemy.MyAttackTarget == null)
-        {
-            ToAlertState();
-            return;
-        }        
+    {     
         if (TargetInRange(enemy.MyAttackTarget.position, enemy.attackRange))
         {
             enemy.myRangedWeapon.SetActive(true);
@@ -106,27 +128,6 @@ public class EnemyAttackState : IEnemyState {
         {
             ToChaseState();
         }
-    }
-    
-
-    /// <summary>
-    /// 
-    /// </summary>
-    bool TargetInRange(Vector3 attackTarget, float range)
-    {
-        float distanceToTarget = Vector3.Distance(attackTarget, enemy.myTransform.position);
-        return distanceToTarget <= enemy.attackRange;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    void TurnTowardsTarget()
-    {
-        enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
-        Vector3 dir = enemy.locationOfInterest - new Vector3(enemy.myTransform.position.x - 100, enemy.myTransform.position.y, enemy.myTransform.position.z);
-        Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime, 0.0f);
-        enemy.myTransform.rotation = Quaternion.LookRotation(rotation);
-    }
+    }       
     #endregion
 }

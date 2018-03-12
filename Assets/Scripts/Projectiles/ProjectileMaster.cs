@@ -4,7 +4,6 @@
 /// GoingDark_Reboot
 /// </summary>
 using UnityEngine;
-using ANM.Utilities;
 using GoingDark.Core.Enums;
 
 
@@ -16,28 +15,37 @@ public class ProjectileMaster : MonoBehaviour {
 	[SerializeField] bool isPlayerControlled = false;
 	[SerializeField] ProjectileType _type;
 	[SerializeField] Impairments debuff;
-	[SerializeField] float speed = 10f;
 	[SerializeField] float damage = 10f;
+	[SerializeField] float curSpeed = 10f;
+	[SerializeField] float maxSpeed = 10f;
 	[SerializeField] float aliveTimer = 10f;
 	[SerializeField] AudioClip audioClip;
+
+	[SerializeField] GameObject projectile;
+	[SerializeField] GameObject explosion;
 
 	protected bool init = false;
 	protected Transform myTransform;
 	#endregion
 
 
-	void OnEnable()
+
+	void OnDisable()
 	{
-		Invoke("Kill", 3f);
+		curSpeed = maxSpeed;
+		if (projectile != null)
+			projectile.SetActive(true);
 	}
+
 	#region Accessors
 	public bool GetIsPlayerControlled() { return isPlayerControlled; }
 
 	public ProjectileType GetProjectileType() { return _type; }
 	public Impairments GetDebuff() { return debuff; }
 
-	public float GetSpeed() { return speed; }
 	public float GetDamage() { return damage; }
+	public float GetCurSpeed() { return curSpeed; }
+	public float GetMaxSpeed() { return maxSpeed; }
 	public float GetAliveTimer() { return aliveTimer; }
 
 	public AudioClip GetAudio() { return audioClip; }
@@ -55,10 +63,11 @@ public class ProjectileMaster : MonoBehaviour {
 	{
 		if (GetIsPlayerControlled())
 		{
-			if (col.transform.CompareTag("Enemy") || col.transform.CompareTag("Orb"))
-			{
+			if (col.transform.CompareTag("Enemy"))
+			{				
 				if (col.gameObject.GetComponent<ShipMaster>() != null)
 					col.gameObject.GetComponent<ShipMaster>().CallEventProjectileHit(GetProjectileType(), GetDamage(), GetDebuff());
+				Kill();
 			}
 
 			if (col.transform.CompareTag("Asteroid"))
@@ -69,16 +78,18 @@ public class ProjectileMaster : MonoBehaviour {
 		}
 		else
 		{
+			Debug.Log("Projectile controlled by Enemy");
 			if (col.transform.CompareTag("Player"))
 			{
-				if (IsInvoking("Kill"))
-					CancelInvoke("Kill");
-
 				if (col.gameObject.GetComponent<ShipMaster>() != null)
-					col.gameObject.GetComponent<ShipMaster>().CallEventProjectileHit(GetProjectileType(), GetDamage(), GetDebuff());				
+					col.gameObject.GetComponent<ShipMaster>().CallEventProjectileHit(GetProjectileType(), GetDamage(), GetDebuff());
+
+				Debug.Log("Player was Hit by Enemy!");
+				Kill();
 			}
-			if (col.transform.CompareTag("Asteroid") || col.transform.CompareTag("Decoy"))
+			if (col.transform.CompareTag("Asteroid"))
 			{
+				Debug.Log("Asteroid was Hit by Enemy!");
 				col.transform.SendMessage("Kill");
 				Kill();
 			}
@@ -89,21 +100,29 @@ public class ProjectileMaster : MonoBehaviour {
 	#region Recycle
 	void SetInactive()
 	{
-		gameObject.SetActive(false);
+		curSpeed = 0;
+		if (projectile != null)
+			projectile.SetActive(false);
+		else
+			Debug.Log("Projectile has no Projectile reference attached!");
 	}
-	void Kill()
-	{
+
+	public void Kill()
+	{		
 		if (IsInvoking("Kill"))
 			CancelInvoke("Kill");
 
-		GameObject go = ObjectPoolManager.Instance.GetProjectileExplosion(GetProjectileType());
-
-		if (go != null)
-		{
-			go.transform.position = myTransform.position;
-			go.SetActive(true);
-		}
 		SetInactive();
+		if (explosion != null)
+		{
+			explosion.transform.position = myTransform.position;
+			explosion.SetActive(true);
+		}
+		else
+		{			
+			gameObject.SetActive(false);
+			Debug.Log("Projectile has no explosion attached!");
+		}		
 	}
 	#endregion
 }

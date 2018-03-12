@@ -16,24 +16,24 @@ public class EnemyStatePattern : MonoBehaviour {
     public EnemyMaster myEnemyMaster;
 
     [Header("Attack")]
+    public float attackRange = 500f;
     public GameObject myRangedWeapon;
-    public float attackRange = 30f;
     [SerializeField] bool isAttacking;
-
 
     [Header("Detection")]
     public Transform myFollowTarget;
-    public LayerMask mySightLayers;
-    public float sightRange = 500f;
-    public float fleeRange = 250f;
-    public float detectBehindRange = 100f;
-
+	[Space]
+    public float sightRange = 600f;
+    public float fleeRange = 800f;
+    public float detectBehindRange = 250f;
+	[Space]
     public float offset = 0.5f;
-    public int requiredDetectionCount = 15;   
+    public int requiredDetectionCount = 10;   
 
     [Header("Layer")]
     public LayerMask enemyLayers;
     public string[] enemyTags;
+	[Space]
     public LayerMask friendlyLayers;
     public string[] friendlyTags;    
 
@@ -69,6 +69,19 @@ public class EnemyStatePattern : MonoBehaviour {
         myEnemyMaster.EventCriticalHealth += ActivateFleeState;
         myEnemyMaster.EventHealthRecovered += ActivatePatrolState;
         myEnemyMaster.EventOnHit += ActivateGetHitState;
+
+		if(gameObject.GetComponentInChildren<LaserSystem>() != null)
+		{
+			Debug.Log("Enemy laser system attached");
+		}
+		else if(gameObject.GetComponentInChildren<MissileSystem>() != null)
+		{
+			Debug.Log("Enemy missile system attached");
+		}
+		else
+		{
+			Debug.LogError("Something is missing...");
+		}
     }
 
     void Initialize()
@@ -99,7 +112,17 @@ public class EnemyStatePattern : MonoBehaviour {
         StopAllCoroutines();
     }
 
-    void FixedUpdate()
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.white;
+		Gizmos.DrawWireSphere(transform.position, sightRange);
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(transform.position, attackRange);
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(transform.position, detectBehindRange);
+	}
+
+	void FixedUpdate()
     {
         currentState.UpdateState();
         myRigidbody.MovePosition(myTransform.position + myTransform.forward * Time.fixedDeltaTime * myEnemyMaster.GetMoveData().speed);
@@ -116,7 +139,7 @@ public class EnemyStatePattern : MonoBehaviour {
     #region Enemy State Pattern
     void ActivateFleeState()
     {
-        myRangedWeapon.SetActive(false);
+        //myRangedWeapon.SetActive(false);
         if (currentState == stateGetHit)
         {
             capturedState = fleeState;
@@ -128,7 +151,7 @@ public class EnemyStatePattern : MonoBehaviour {
     void ActivatePatrolState()
     {
         currentState = statePatrol;
-        myRangedWeapon.SetActive(false);
+        //myRangedWeapon.SetActive(false);
     }
 
     void ActivateGetHitState()

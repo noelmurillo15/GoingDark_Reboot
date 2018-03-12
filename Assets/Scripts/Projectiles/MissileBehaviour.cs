@@ -46,14 +46,14 @@ public class MissileBehaviour : ProjectileMaster {
 		if (tracking)
 		{
 			LookAt();
-			myTransform.Translate(0f, 0f, GetSpeed() * Time.fixedDeltaTime);
+			myTransform.Translate(0f, 0f, GetCurSpeed() * Time.fixedDeltaTime);
 		}
 		else
 		{
 			if (!deflected)
-				myRigidbody.MovePosition(myTransform.position + myTransform.forward * Time.fixedDeltaTime * GetSpeed());
+				myRigidbody.MovePosition(myTransform.position + myTransform.forward * Time.fixedDeltaTime * GetCurSpeed());
 			else
-				myRigidbody.MovePosition(myTransform.position + -myTransform.forward * Time.fixedDeltaTime * GetSpeed());
+				myRigidbody.MovePosition(myTransform.position + -myTransform.forward * Time.fixedDeltaTime * GetCurSpeed());
 		}
 	}
 

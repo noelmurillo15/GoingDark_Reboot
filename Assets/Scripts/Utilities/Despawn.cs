@@ -18,12 +18,13 @@ public class Despawn : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    public void Kill()
+	// Update is called once per frame
+	public void Kill()
     {
         if (IsInvoking("Kill"))
             CancelInvoke("Kill");
 
         gameObject.SetActive(false);
+		transform.parent.gameObject.SetActive(false);
     }
 }

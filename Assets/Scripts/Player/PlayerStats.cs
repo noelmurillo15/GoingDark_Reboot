@@ -34,7 +34,7 @@ public class PlayerStats : ShipMaster {
 
     void Awake()
     {
-		EventProjectileHit += ProjectileHit;
+		EventDeath += Kill;
 		PlayerPrefs.SetString("Difficulty", "Medium");
         diff = PlayerPrefs.GetString("Difficulty");         
         switch (diff)
@@ -117,150 +117,7 @@ public class PlayerStats : ShipMaster {
         msgs.Stun(3f);
         //myDebuffData.Stun(3f);
     }
-	#endregion
-
-	#region Damage Calls   
-	public void ProjectileHit(ProjectileType _type, float baseDmg)
-	{
-		Debug.Log("Projectile Hit Called");
-		switch (_type)
-		{
-			case ProjectileType.BasicMissile:
-				Debug.Log("Player Hit by : BasicMissile");
-				break;
-			case ProjectileType.EmpMissile:
-				Debug.Log("Player Hit by : EmpMissile");
-				break;
-			case ProjectileType.ShieldBreakMissile:
-				Debug.Log("Player Hit by : ShieldBreakMissile");
-				break;
-			case ProjectileType.ChromaticMissile:
-				Debug.Log("Player Hit by : ChromaticMissile");
-				break;
-			case ProjectileType.SlowMissile:
-				Debug.Log("Player Hit by : SlowMissile");
-				break;
-			case ProjectileType.SysruptMissile:
-				Debug.Log("Player Hit by : SysruptMissile");
-				break;
-			case ProjectileType.BasicLaser:
-				Debug.Log("Player Hit by : BasicLaser");
-				break;
-			case ProjectileType.ChargedLaser:
-				Debug.Log("Player Hit by : ChargedLaser");
-				break;
-			default:
-				Debug.Log("Unknown Projectile");
-				break;
-		}
-	}
-
-	public void CrashHit(float _speed)
-    {
-        //controller.AddRumble(1f, rumbleIntesity);
-        myHealthData.Damage(_speed * 20f);
-		healthBar.fillAmount = GetHealthData().HealthPercentage();
-		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		UnCloak();
-    }    
-
-    void EMPHit()
-    {
-        //controller.AddRumble(5f, rumbleIntesity);
-        PlayerStunned();
-		
-		UnCloak();      
-    }
-    void SlowHit()
-    {
-        PlayerSlowed();
-		healthBar.fillAmount = GetHealthData().HealthPercentage();
-		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		UnCloak();
-    }
-    void SysruptHit()
-    {
-        systemManager.SystemDamaged();
-		healthBar.fillAmount = GetHealthData().HealthPercentage();
-		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		UnCloak();
-    }
-    void SplashDmg()
-    {
-        //controller.AddRumble(.25f, rumbleIntesity);
-        if (myShieldData.GetShieldActive())
-            myShieldData.Damage(5 * dmgMultiplier);
-        else
-            myHealthData.Damage(5 * dmgMultiplier);
-		healthBar.fillAmount = GetHealthData().HealthPercentage();
-		shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-	}
-  //  void ShieldHit(LaserProjectile laser)
-  //  {
-  //      //controller.AddRumble(.5f, rumbleIntesity);
-  //      myShieldData.Damage(laser.GetBaseDmg() * dmgMultiplier);
-		//healthBar.fillAmount = GetHealthData().HealthPercentage();
-		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		//laser.Kill();
-  //  }
-  //  void ShieldHit(MissileProjectile missile)
-  //  {
-  //      //controller.AddRumble(.5f, rumbleIntesity);
-  //      myShieldData.Damage(missile.GetBaseDmg() * dmgMultiplier);
-		//healthBar.fillAmount = GetHealthData().HealthPercentage();
-		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		//missile.Kill();
-  //  }
-  //  void LaserDmg(LaserProjectile laser)
-  //  {
-  //      UnCloak();
-  //      if (myShieldData.GetShieldActive())
-  //      {
-  //          ShieldHit(laser);
-  //          ShieldRecharge();
-  //          return;
-  //      }
-  //      //controller.AddRumble(1f, rumbleIntesity);
-  //      myHealthData.Damage(laser.GetBaseDmg() * dmgMultiplier);
-		//healthBar.fillAmount = GetHealthData().HealthPercentage();
-		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		//laser.Kill();                        
-  //  }
-  //  void MissileDebuff(MissileProjectile missile)
-  //  {        
-  //      switch (missile.Type)
-  //      {
-  //          case ProjectileType.SlowMissile:
-  //              SlowHit();
-  //              break;
-  //          case ProjectileType.EmpMissile:
-  //              EMPHit();
-  //              break;
-  //          case ProjectileType.SysruptMissile:
-  //              SysruptHit();
-  //              break;
-  //          case ProjectileType.ShieldBreakMissile:
-  //              ShieldHit(missile);
-  //              break;
-  //      }
-  //      missile.Kill();
-  //  }
-  //  void MissileDmg(MissileProjectile missile)
-  //  {
-  //      UnCloak();
-  //      if (myShieldData.GetShieldActive())
-  //      {
-  //          ShieldHit(missile);
-  //          ShieldRecharge();
-  //          return;
-  //      }
-  //      //controller.AddRumble(1f, rumbleIntesity);
-  //      myHealthData.Damage(missile.GetBaseDmg() * dmgMultiplier);
-		//healthBar.fillAmount = GetHealthData().HealthPercentage();
-		//shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
-		//missile.Kill();
-  //  }
-    #endregion
+	#endregion	
 
     #region Death
     public void GoToStation()
@@ -284,12 +141,14 @@ public class PlayerStats : ShipMaster {
     }
     void GameOver()
     {
-        transform.root.GetComponent<EnemyManager>().AllEnemiesPatrol();
-        transform.root.GetComponent<GameOver>().InitializeGameOverScene();
+		//transform.root.GetComponent<EnemyManager>().AllEnemiesPatrol();
+		//transform.root.GetComponent<GameOver>().InitializeGameOverScene();
+		Debug.Log("GameOver!");
     }
     public void Kill()
     {
-		EventProjectileHit -= ProjectileHit;
+		EventDeath -= Kill;
+		Debug.Log("Player Kill called");
 		deathTransition.Death();
         Invoke("GameOver", 1.5f);
     }

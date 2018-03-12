@@ -62,8 +62,10 @@ public class EnemyPatrolState : IEnemyState {
 
     public void ToAlertState()
     {
+		Debug.Log("Patrol -> Alert");
         enemy.currentState = enemy.stateAlert;
-    }
+		return;
+	}
 
     public void ToChaseState() {/* not used by Patrol state */}
     public void ToPatrolState() {/* not used by Patrol state */ }
@@ -85,13 +87,11 @@ public class EnemyPatrolState : IEnemyState {
             {
                 continue;
             }
-
             CheckBehindDistance(col.transform);
         }
 
         //  Checks Max Sight Range
         colliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.sightRange, enemy.enemyLayers);
-
         foreach (Collider col in colliders)
         {
             if (col.transform == enemy.myTransform)
@@ -100,10 +100,8 @@ public class EnemyPatrolState : IEnemyState {
             }
 
             RaycastHit hit;
-
             VisibilityCalculations(col.transform);
-
-            if (Physics.Linecast(enemy.myTransform.position, lookAtPoint, out hit, enemy.mySightLayers))
+            if (Physics.Linecast(enemy.myTransform.position, lookAtPoint, out hit, enemy.enemyLayers))
             {
                 foreach (string tags in enemy.enemyTags)
                 {

@@ -4,7 +4,6 @@
 /// GoingDark_Reboot
 /// </summary>
 using UnityEngine;
-using GoingDark.Core.Enums;
 
 
 public class PlayerCollisions : MonoBehaviour
@@ -34,13 +33,13 @@ public class PlayerCollisions : MonoBehaviour
             if (hit.transform.CompareTag("Asteroid"))
             {
 				Debug.Log("Crashed with Asteroid");
-				stats.CrashHit(movedata.speed / movedata.maxSpeed);
+				//stats.CrashHit(movedata.speed / movedata.maxSpeed);
                 padding = 1f;
             }
             if (hit.transform.CompareTag("Enemy"))
             {
 				Debug.Log("Crashed with Enemy");
-                stats.CrashHit(movedata.speed / movedata.maxSpeed);
+                //stats.CrashHit(movedata.speed / movedata.maxSpeed);
                 padding = 1f;
             }
             if (hit.transform.CompareTag("Meteor"))

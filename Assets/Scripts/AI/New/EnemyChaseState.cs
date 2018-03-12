@@ -25,25 +25,38 @@ public class EnemyChaseState : IEnemyState {
     #region Ienemy Methods
     public void UpdateState()
     {
-        enemy.meshRendererFlag.material.color = Color.blue;
-        Look();
-        Pursue();
+		if (enemy.MyAttackTarget != null)
+		{
+			enemy.meshRendererFlag.material.color = Color.blue;
+			Look();
+			Pursue();
+		}
+		else
+		{
+			ToAlertState();
+		}
     }
 
     public void ToPatrolState()
     {
-        enemy.currentState = enemy.statePatrol;
-    }
+		Debug.Log("Chase -> Patrol");
+		enemy.currentState = enemy.statePatrol;
+		return;
+	}
 
-    public void ToAlertState()
+	public void ToAlertState()
     {
-        enemy.currentState = enemy.stateAlert;
-    }
+		Debug.Log("Chase -> Alert");
+		enemy.currentState = enemy.stateAlert;
+		return;
+	}
 
     public void ToAttackState()
     {
-        enemy.currentState = enemy.stateAttack;
-    }
+		Debug.Log("Chase -> Attack");
+		enemy.currentState = enemy.stateAttack;
+		return;
+	}
 
     public void ToChaseState() {/* not used by Chase state */ }
     #endregion
@@ -63,11 +76,11 @@ public class EnemyChaseState : IEnemyState {
         Collider[] colliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.sightRange, enemy.enemyLayers);
         if (colliders.Length == 0)
         {
-            ToPatrolState();
+			ToAlertState();
             return;
         }
 
-        capturedDistance = enemy.sightRange * 1.25f;
+        capturedDistance = enemy.sightRange * 1.2f;
         foreach (Collider col in colliders)
         {
             if (col.transform == enemy.myTransform)
@@ -96,8 +109,8 @@ public class EnemyChaseState : IEnemyState {
             enemy.locationOfInterest = enemy.MyAttackTarget.position;
 
             enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
-            Vector3 dir = enemy.locationOfInterest - new Vector3(enemy.myTransform.position.x - 100, enemy.myTransform.position.y, enemy.myTransform.position.z);
-            Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime, 0.0f);
+            Vector3 dir = enemy.locationOfInterest - new Vector3(enemy.myTransform.position.x, enemy.myTransform.position.y, enemy.myTransform.position.z);
+            Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime * enemy.myEnemyMaster.GetMoveData().rotateSpeed, 0.0f);
             enemy.myTransform.rotation = Quaternion.LookRotation(rotation);
 
             float distanceToTarget = Vector3.Distance(enemy.transform.position, enemy.locationOfInterest);

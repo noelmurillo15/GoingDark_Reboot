@@ -5,6 +5,7 @@
 /// </summary>
 using System;
 using UnityEngine;
+using GoingDark.Core.Enums;
 
 
 [Serializable]
@@ -30,9 +31,12 @@ public class HealthProperties {
 		isDead = false;
 		healthCritical = false;
 
+
 		health = _hp;
 		maxHealth = _hp;
 		shipMaster = _ref;
+
+		shipMaster.EventProjectileHit += Damage;
 	}
 
 	#region Modifiers
@@ -48,12 +52,13 @@ public class HealthProperties {
 		}
 	}
 
-	public void Damage(float _dmg)
+	public void Damage(ProjectileType _type, float _dmg)
 	{
 		health = Mathf.Clamp(health - _dmg, 0f, maxHealth);
 
 		if(health <= 0f)
 		{
+			shipMaster.EventProjectileHit -= Damage;
 			isDead = true;
 			shipMaster.CallEventDeath();
 		}

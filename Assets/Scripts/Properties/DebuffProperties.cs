@@ -13,19 +13,35 @@ public class DebuffProperties : MonoBehaviour{
 
 
 	#region Variables
+	ShipMaster shipMaster;
+	[SerializeField] bool stunned;
+	[SerializeField] bool slowed;
+	[SerializeField] bool enflamed;
+	[SerializeField] bool sysrupt;
 	[SerializeField] GameObject stunParticles;
     [SerializeField] GameObject slowParticles;
 	[SerializeField] GameObject enflameParticles;
 	[SerializeField] GameObject sysruptParticles;
 	#endregion
 
+	private void Start()
+	{
+		shipMaster = GetComponent<ShipMaster>();
+		stunParticles = transform.GetChild(1).GetChild(0).gameObject;
+		slowParticles = transform.GetChild(1).GetChild(1).gameObject;
+		enflameParticles = transform.GetChild(1).GetChild(2).gameObject;
+		sysruptParticles = transform.GetChild(1).GetChild(3).gameObject;
+	}
 
 
 	public void ActivateDebuff(Impairments debuff, float duration)
 	{
+		if (debuff == Impairments.None)
+			return; 
+
 		switch (debuff)
 		{
-			case Impairments.Slowed:
+			case Impairments.Slowed:				
 				Slow(duration);
 				break;
 			case Impairments.Stunned:
@@ -37,9 +53,6 @@ public class DebuffProperties : MonoBehaviour{
 			case Impairments.Sysrupt:
 				Sysrupt(duration);
 				break;
-
-			default:
-				break;
 		}
 	}
 
@@ -49,7 +62,8 @@ public class DebuffProperties : MonoBehaviour{
 		if (IsInvoking("RemoveStun"))
 			CancelInvoke("RemoveStun");
 
-		//move.GetMoveData().SetMaxSpeed(0f);
+		stunned = true;
+		shipMaster.GetMoveData().boost = 0f;
 		stunParticles.SetActive(true);
 		Invoke("RemoveStun", duration);
 	}
@@ -58,12 +72,14 @@ public class DebuffProperties : MonoBehaviour{
 		if (IsInvoking("RemoveSlow"))
 			CancelInvoke("RemoveSlow");
 
-		//move.GetMoveData().SetBoost(.5f);
+		slowed = true;
+		shipMaster.GetMoveData().boost = .25f;
 		slowParticles.SetActive(true);
 		Invoke("RemoveSlow", duration);
 	}
 	void Enflame(float duration)
 	{
+		enflamed = true;
 		if (IsInvoking("RemoveEnflame"))
 			CancelInvoke("RemoveEnflame");
 
@@ -72,6 +88,7 @@ public class DebuffProperties : MonoBehaviour{
 	}
 	void Sysrupt(float duration)
 	{
+		sysrupt = true;
 		if (IsInvoking("RemoveSysrupt"))
 			CancelInvoke("RemoveSysrupt");
 
@@ -81,22 +98,24 @@ public class DebuffProperties : MonoBehaviour{
 
 	void RemoveStun()
     {
-        //move.GetMoveData().SetMaxSpeed(100f);
-        stunParticles.SetActive(false);
+		stunned = false;
+		shipMaster.GetMoveData().boost = 1f;
+		stunParticles.SetActive(false);
     }
     void RemoveSlow()
     {
-        //move.GetMoveData().SetBoost(1f);
-        slowParticles.SetActive(false);
+		slowed = false;
+		shipMaster.GetMoveData().boost = 1f;
+		slowParticles.SetActive(false);
     }
 	void RemoveEnflame()
 	{
-		//move.GetMoveData().SetMaxSpeed(100f);
+		enflamed = false;
 		enflameParticles.SetActive(false);
 	}
 	void RemoveSysrupt()
 	{
-		//move.GetMoveData().SetBoost(1f);
+		sysrupt = false;
 		sysruptParticles.SetActive(false);
 	}
 	#endregion
