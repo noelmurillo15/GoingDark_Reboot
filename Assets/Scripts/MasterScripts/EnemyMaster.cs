@@ -36,6 +36,11 @@ public class EnemyMaster : ShipMaster {
 	{
 		EventDeath -= Kill;
 	}
+
+	void Update()
+	{		
+		myMoveData.IncreaseSpeed();
+	}
 	#endregion
 
 	#region Accessors      
@@ -44,14 +49,6 @@ public class EnemyMaster : ShipMaster {
     public EnemyTypes GetEnemyType() { return myType; }
 
     public EnemyStatePattern GetStateManager() { return myStatePattern; }
-    #endregion
-
-    #region Modifiers      
-    public Transform AttackTarget
-    {
-        get { return myAttackTarget; }
-        set { myAttackTarget = value; }
-    }
     #endregion
 
 	#region Private Methods

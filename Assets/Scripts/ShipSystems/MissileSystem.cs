@@ -17,16 +17,15 @@ public class MissileSystem : ShipSystem {
 	{
 		public ProjectileType type;
 		public int count;
-		public float maxFireRate;
 
 		public void Initialize(ProjectileType _type)
 		{
 			type = _type;
 			count = 10;
-			maxFireRate = 1f;
 		}
 	}
 
+	[Header("Missile")]
 	[SerializeField] int currType = 0;
 	[SerializeField] bool isPlayerControlled = false;
 	[SerializeField] Missile[] missiles = new Missile[8];
@@ -35,7 +34,9 @@ public class MissileSystem : ShipSystem {
 	[SerializeField] Transform fireLocation;
 	[SerializeField] MissileSystemUI playerUI;
 
+	ShipMaster shipMaster;
     Transform myTransform;
+	Transform myTarget;
 	#endregion
 
 
@@ -43,8 +44,17 @@ public class MissileSystem : ShipSystem {
 	#region Unity Functions
 	void Start()
     {
-		maxCooldown = 1f;
         myTransform = transform;
+		if (maxCooldown == 0f)
+			maxCooldown = 3f;
+
+		currType = (int)missiles[0].type;
+
+		shipMaster = transform.root.GetComponent<ShipMaster>();
+		if (shipMaster == null)
+			Debug.LogError("No ShipMaster Reference Attached!");
+		else
+			shipMaster.EventSetAttackTargetCoordinates += LockOn;
 
 		if (transform.root.GetComponent<MissileSystemUI>() != null)
 		{
@@ -56,22 +66,30 @@ public class MissileSystem : ShipSystem {
 
 			playerUI.UpdateUI(missiles[currType]);
 		}
+
+		if (fireLocation == null)
+			Debug.LogError("Missile system has no fire location attached!");
     }
 
-    void FixedUpdate()
+	void OnDisable()
+	{
+		shipMaster.EventSetAttackTargetCoordinates -= LockOn;
+	}
+
+	void FixedUpdate()
     {
+		if (cooldown > 0f)
+			cooldown -= Time.deltaTime;
+		else cooldown = 0f;
+
 		if (isPlayerControlled)
 		{
 			if (Activated)
-				Launch();
-
-			if (cooldown > 0f)
-				cooldown -= Time.deltaTime;
-		}
-		else
-		{
-
-		}
+			{
+				Shoot();
+				AudioManager.instance.PlayMissileLaunch();
+			}
+		}	
     }
 	#endregion
 
@@ -83,16 +101,14 @@ public class MissileSystem : ShipSystem {
 	#endregion 
 
 	#region Public Functions
-	public void Launch()
+	public void Shoot()
     {
-		if (GetMissileCount() > 0)
+		if (GetMissileCount() > 0 && cooldown == 0f)
         {
 			DeActivate();
-			GetMissile();			
-			AudioManager.instance.PlayMissileLaunch();
+			FireMissile();						
 		}
     }
-
     public void WeaponSwap()
     {
 		currType++;
@@ -100,44 +116,44 @@ public class MissileSystem : ShipSystem {
 			currType = 0;
 
 		playerUI.MissileSwap(missiles[currType]);
-	}
-   
+	}   
 	public void AddRandomMissile()
     {
 		missiles[currType].count += 10;
 		if (isPlayerControlled)
 			playerUI.UpdateUI(missiles[currType]);
 	}
+	public void LockOn(Transform target)
+	{
+		myTarget = target;
+		if (myTarget != null)
+		{
+			Vector3 playerDir = myTarget.position - myTransform.position;
+			Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15f);
+			myTransform.rotation = Quaternion.LookRotation(direction);
+			if (Vector3.Angle(playerDir, direction) <= 2f)
+				Shoot();
+		}
+	}
 	#endregion
 
 	#region Private Functions
-	void LockOn(Transform target)
+	void FireMissile()
 	{
-		Debug.Log("Locking On");
-		Vector3 playerDir = target.position - myTransform.position;
-		Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
-		myTransform.rotation = Quaternion.LookRotation(direction);
-
-		if (Vector3.Angle(playerDir, direction) <= .1f)
-			Launch();
-	}
-
-	void GetMissile()
-	{
-		GameObject obj = ObjectPoolManager.Instance.GetProjectile((ProjectileType)currType);
-		if (obj != null)
+		GameObject projectile = ObjectPoolManager.Instance.GetProjectile((ProjectileType)currType);
+		if (projectile != null)
 		{
 			missiles[currType].count--;
-			obj.transform.position = fireLocation.position;
-			obj.transform.rotation = fireLocation.rotation;
-			obj.SetActive(true);
-			obj.GetComponent<ProjectileMaster>().SetIsPlayerControlled(isPlayerControlled);
+			projectile.transform.position = fireLocation.position;
+			projectile.transform.rotation = fireLocation.rotation;
+			projectile.SetActive(true);
+			projectile.GetComponent<ProjectileMaster>().SetIsPlayerControlled(isPlayerControlled);
 
 			if (isPlayerControlled)
 			{
 				playerUI.UpdateUI(missiles[currType]);				
 				if (lockon.GetLockedOn())
-					obj.SendMessage("LockedOn", lockon.GetRaycastHit());
+					projectile.SendMessage("LockedOn", lockon.GetRaycastHit());
 			}
 		}
 	}	

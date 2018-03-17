@@ -65,7 +65,7 @@ public class GameOverMenu : MonoBehaviour
             sceneobjs[x].SetActive(true);        
 
         //  Respawn The Player
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>().Respawn();
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMaster>().Respawn();
     }
 
     public void LoadScene(string scenename)

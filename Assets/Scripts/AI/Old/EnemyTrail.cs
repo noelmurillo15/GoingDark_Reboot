@@ -5,7 +5,7 @@ public class EnemyTrail : MonoBehaviour
 {
     private int numTrails;
     private TrailRenderer[] trails;
-    private HealthProperties HealthInfo;
+    [SerializeField] HealthProperties HealthInfo;
 
 
     // Use this for initialization

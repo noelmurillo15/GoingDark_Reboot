@@ -10,13 +10,13 @@ public class PlayerCollisions : MonoBehaviour
 {
 
     private float padding;
-    private PlayerStats stats;
+    private PlayerMaster stats;
     private MovementProperties movedata;
 
     void Awake()
     {
         padding = 0f;
-        stats = GetComponent<PlayerStats>();
+        stats = GetComponent<PlayerMaster>();
 		movedata = stats.GetMoveData();
     }
 

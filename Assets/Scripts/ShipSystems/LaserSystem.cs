@@ -1,5 +1,5 @@
 ﻿///<summary>
-/// 3/7/2018
+/// 3/12/2018
 /// Allan Noel Murillo
 /// GoingDark_Reboot
 /// </summary>
@@ -16,101 +16,96 @@ public class LaserSystem : ShipSystem {
 	public struct Laser
 	{
 		public ProjectileType type;
-		public float maxFireRate;
-
 		public void Initialize(ProjectileType _type)
 		{
 			type = _type;
-			maxFireRate = .2f;
 		}
 	}
 
-	[SerializeField] bool isPlayerControlled = false;
+	[Header("Laser")]
 	[SerializeField] Laser[] lasers = new Laser[2];
-	[SerializeField] int currType = 0;
+	[Space]
+	[SerializeField] Transform myTarget;
+	[Space]
 	[SerializeField] Transform gun1;
 	[SerializeField] Transform gun2;
 	[SerializeField] LaserSystemUI playerUI;
-	[SerializeField] bool flip;
-	[SerializeField] bool singleBarrel;
-
+	bool flip;
+	int currType = 0;
+	bool singleBarrel;
+	bool isPlayerControlled = false;
+	ShipMaster shipMaster;
 	Transform myTransform;
 	#endregion
 
 
+	#region Unity Functions
 	void Start()
 	{
 		flip = false;
-		currType = 0;
 		myTransform = transform;
-
-		if (gun2 == null)
-			singleBarrel = true;
-
+		if (transform.root.GetComponent<ShipMaster>() != null)
+		{
+			shipMaster = transform.root.GetComponent<ShipMaster>();
+			shipMaster.EventSetAttackTargetCoordinates += LockOn;
+		}
+		else
+		{
+			Debug.LogError("Could not find shipmaster");
+		}
 		if (transform.root.GetComponent<LaserSystemUI>() != null)
 		{
 			isPlayerControlled = true;
 			playerUI = transform.root.GetComponent<LaserSystemUI>();
+
 			for (int i = 0; i < 2; i++)
 				lasers[i].Initialize(ProjectileType.BasicLaser + i);
-
-			maxCooldown = lasers[currType].maxFireRate;
 		}
+
+		if (maxCooldown == 0f)
+			maxCooldown = 1f;
+
+		if (gun2 == null && gun1 == null)
+		{
+			Debug.LogError("No guns attached");
+			return;
+		}
+
+		if (gun1 == null || gun2 == null)
+			singleBarrel = true;
+	}
+
+	void OnDisable()
+	{
+		shipMaster.EventSetAttackTargetCoordinates -= LockOn;
 	}
 
 	void FixedUpdate()
 	{
+		if (cooldown > 0f)
+			cooldown -= Time.deltaTime;
+		else cooldown = 0f;
+
 		if (isPlayerControlled)
 		{
 			if (Activated)
-				ShootLaser();
-
-			if (cooldown > 0f)
-				cooldown -= Time.deltaTime;
-		}
-		else
-		{
-
+				Shoot();
 		}
 	}
+	#endregion
 
-	private void LockOn(Transform target)
+	#region Public Functions
+	public void LockOn(Transform target)
 	{
-		Debug.Log("Locking On");
-		Vector3 playerDir = target.position - myTransform.position;
-		Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15.0f);
-		myTransform.rotation = Quaternion.LookRotation(direction);
-
-		ShootLaser();
-	}
-
-	public void ShootLaser()
-	{
-		DeActivate();
-		flip = !flip;
-		GetLaser();
-	}
-
-	private void GetLaser()
-	{
-		GameObject laser = ObjectPoolManager.Instance.GetProjectile(ProjectileType.BasicLaser + currType);
-		if (flip && !singleBarrel)
+		myTarget = target;
+		if (myTarget != null)
 		{
-			laser.transform.position = gun1.position;
-			laser.transform.rotation = gun1.rotation;
+			Vector3 playerDir = target.position - myTransform.position;
+			Vector3 direction = Vector3.RotateTowards(myTransform.forward, playerDir, Time.fixedDeltaTime * 30f, 15f);
+			myTransform.rotation = Quaternion.LookRotation(direction);
+			if (Vector3.Angle(playerDir, direction) <= 2f)
+				Shoot();
 		}
-		else if (!singleBarrel)
-		{
-			laser.transform.position = gun2.position;
-			laser.transform.rotation = gun2.rotation;
-		}
-		else
-		{
-			laser.transform.position = gun1.position;
-			laser.transform.rotation = gun1.rotation;
-		}
-		laser.SetActive(true);
-		laser.GetComponent<ProjectileMaster>().SetIsPlayerControlled(isPlayerControlled);
 	}
 
 	public void WeaponSwap()
@@ -122,4 +117,43 @@ public class LaserSystem : ShipSystem {
 		if (isPlayerControlled)
 			playerUI.LaserSwap(lasers[currType]);
 	}
+	#endregion
+
+	#region Private Functions
+	void Shoot()
+	{
+		if (cooldown == 0f)
+		{
+			cooldown = maxCooldown;
+			DeActivate();
+			FireLaser();
+			flip = !flip;
+		}
+	}
+
+	void FireLaser()
+	{
+		GameObject projectile = ObjectPoolManager.Instance.GetProjectile(ProjectileType.BasicLaser + currType);
+		if (projectile != null)
+		{
+			if (flip && !singleBarrel)
+			{
+				projectile.transform.position = gun1.position;
+				projectile.transform.rotation = gun1.rotation;
+			}
+			else if (!singleBarrel)
+			{
+				projectile.transform.position = gun2.position;
+				projectile.transform.rotation = gun2.rotation;
+			}
+			else
+			{
+				projectile.transform.position = gun1.position;
+				projectile.transform.rotation = gun1.rotation;
+			}
+			projectile.SetActive(true);
+			projectile.GetComponent<ProjectileMaster>().SetIsPlayerControlled(isPlayerControlled);
+		}
+	}
+	#endregion
 }

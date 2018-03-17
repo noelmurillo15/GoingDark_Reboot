@@ -26,8 +26,8 @@ public class EnemyInvestigateState : IEnemyState {
     #region INpc Methods
     public void UpdateState()
     {
-        enemy.meshRendererFlag.material.color = Color.gray;
-        Look();
+		enemy.meshRendererFlag.material.color = Color.black;
+		Look();
     }
 
     public void ToPatrolState()
@@ -54,14 +54,11 @@ public class EnemyInvestigateState : IEnemyState {
     /// </summary>
     void Look()
     {
-        enemy.meshRendererFlag.material.color = Color.blue;
-
-        if (enemy.MyAttackTarget == null)
+        if (enemy.locationOfInterest == null)
         {
             ToPatrolState();
             return;
         }
-
         CheckTargetInSight();
     }
 
@@ -70,13 +67,12 @@ public class EnemyInvestigateState : IEnemyState {
     /// </summary>
     void CheckTargetInSight()
     {
-        lookAtTarget = new Vector3(enemy.MyAttackTarget.position.x, enemy.MyAttackTarget.position.y + enemy.offset, enemy.MyAttackTarget.position.z);
-
+        lookAtTarget = enemy.locationOfInterest.position;
         if (Physics.Linecast(enemy.myTransform.position, lookAtTarget, out hit, enemy.enemyLayers))
         {
-            if (hit.transform == enemy.MyAttackTarget && hit.transform != enemy.myTransform)
+            if (hit.transform == enemy.locationOfInterest && hit.transform != enemy.myTransform)
             {
-                enemy.locationOfInterest = enemy.MyAttackTarget.position;
+                enemy.locationOfInterest = hit.transform;
                 GoToLocationOfInterest();
 
                 if (Vector3.Distance(enemy.myTransform.position, lookAtTarget) <= enemy.sightRange)
@@ -95,20 +91,18 @@ public class EnemyInvestigateState : IEnemyState {
         }
     }
 
-    /// <summary>
-    /// Npc will move toward Location of interest
-    /// </summary>
-    void GoToLocationOfInterest()
-    {
-        enemy.meshRendererFlag.material.color = Color.black;
+	/// <summary>
+	/// Npc will move toward Location of interest
+	/// </summary>
+	void GoToLocationOfInterest()
+	{
+		enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
+		Vector3 dir = enemy.locationOfInterest.position - enemy.myTransform.position;
+		Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime, 0.0f);
+		enemy.myTransform.rotation = Quaternion.LookRotation(rotation);
 
-        enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
-        Vector3 dir = enemy.locationOfInterest - new Vector3(enemy.myTransform.position.x - 100, enemy.myTransform.position.y, enemy.myTransform.position.z);
-        Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime, 0.0f);
-        enemy.myTransform.rotation = Quaternion.LookRotation(rotation);
-
-        //  TODO :
-        //  Go to patrol state if you arrive at location of interest and find nothing
-    }
+		//  TODO :
+		//  Go to patrol state if you arrive at location of interest and find nothing
+	}
     #endregion
 }

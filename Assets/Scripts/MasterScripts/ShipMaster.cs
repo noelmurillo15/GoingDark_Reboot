@@ -13,21 +13,16 @@ public class ShipMaster : MonoBehaviour {
 
 	#region Variables
 	[Header("General")]
-	[SerializeField] protected Transform myAttackTarget;
-	[Space]
 	[SerializeField] protected MovementProperties myMoveData;
-	[Space]
 	[SerializeField] protected HealthProperties myHealthData;
-	[Space]
 	[SerializeField] protected ShieldProperties myShieldData;
 	[Space]
 	[SerializeField] protected DebuffProperties myDebuffData;
-
-	[SerializeField] GameObject stunnedPrefab;
 	#endregion
 
 	#region Events
 	public delegate void GeneralEventHandler();
+	public delegate void AttackTargetEventHandler(Transform t);
 	public delegate void ProjectileHitEventHandler(ProjectileType _type, float baseDmg);
 
 	public event GeneralEventHandler EventDeath;
@@ -36,6 +31,7 @@ public class ShipMaster : MonoBehaviour {
 	public event GeneralEventHandler EventHealthRecovered;
 
 	public event ProjectileHitEventHandler EventProjectileHit;
+	public event AttackTargetEventHandler EventSetAttackTargetCoordinates;
 	#endregion
 
 
@@ -47,7 +43,7 @@ public class ShipMaster : MonoBehaviour {
 	/// <param name="shieldBar"></param>
 	protected void Initialize(float hp, GameObject shield)
 	{
-		myAttackTarget = null;
+		//myAttackTarget = null;
 		myHealthData = new HealthProperties(hp, this);
 		myShieldData = new ShieldProperties(hp, shield);
 		myMoveData = new MovementProperties(0f, 1f, 100f, 50f, 5f);
@@ -60,9 +56,9 @@ public class ShipMaster : MonoBehaviour {
 	/// <param name="shield"></param>
 	protected void Initialize(float hp, bool shield)
 	{
-		myAttackTarget = null;
+		//myAttackTarget = null;
 		myHealthData = new HealthProperties(hp, this);
-		myMoveData = new MovementProperties(0f, 1f, 100f, .5f, 20f);
+		myMoveData = new MovementProperties(0f, 1f, 50f, .5f, 20f);
 		myDebuffData = gameObject.AddComponent<DebuffProperties>();
 		if (shield)
 			myShieldData = new ShieldProperties(hp, transform.GetChild(0).gameObject);
@@ -73,6 +69,7 @@ public class ShipMaster : MonoBehaviour {
 	public HealthProperties GetHealthData() { return myHealthData; }
 	public ShieldProperties GetShieldData() { return myShieldData; }
 	public DebuffProperties GetDebuffData() { return myDebuffData; }
+	//public Transform GetAttackTarget() { return myAttackTarget; }
 	#endregion
 
 	#region Event Methods
@@ -106,19 +103,18 @@ public class ShipMaster : MonoBehaviour {
 
 	public void CallEventHealthRecovered()
 	{
-		Debug.Log("Event Health Recovered Called");
 		if (EventHealthRecovered != null)
 		{
+			Debug.Log("Event Health was succesful!");
 			EventHealthRecovered();
 		}
 	}
 
-	public void CallEventDeath()
+	public void CallEventSetAttackTargetCoordinates(Transform t)
 	{
-		if (EventDeath != null)
+		if(EventSetAttackTargetCoordinates != null)
 		{
-			Debug.Log("Death Event was succesful!");
-			EventDeath();		
+			EventSetAttackTargetCoordinates(t);
 		}
 	}
 
@@ -134,9 +130,16 @@ public class ShipMaster : MonoBehaviour {
 			myDebuffData.ActivateDebuff(debuff, 5f);	
 		}
 	}
-	#endregion
 
-	
+	public void CallEventDeath()
+	{
+		if (EventDeath != null)
+		{
+			Debug.Log("Death Event was succesful!");
+			EventDeath();		
+		}
+	}
+	#endregion
 
 	//#region Player Damage Calls   
 	//public void ProjectileHit(ProjectileType _type, float baseDmg)
@@ -175,7 +178,6 @@ public class ShipMaster : MonoBehaviour {
 	//}
 	//public void CrashHit(float _speed)
 	//{
-	//	//controller.AddRumble(1f, rumbleIntesity);
 	//	myHealthData.Damage(_speed * 20f);
 	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
 	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
@@ -185,7 +187,7 @@ public class ShipMaster : MonoBehaviour {
 
 	//void ShieldHit(LaserProjectile laser)
 	//{
-	//	//controller.AddRumble(.5f, rumbleIntesity);
+	//	controller.AddRumble(.5f, rumbleIntesity);
 	//	myShieldData.Damage(laser.GetBaseDmg() * dmgMultiplier);
 	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
 	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
@@ -193,7 +195,7 @@ public class ShipMaster : MonoBehaviour {
 	//}
 	//void ShieldHit(MissileProjectile missile)
 	//{
-	//	//controller.AddRumble(.5f, rumbleIntesity);
+	//	controller.AddRumble(.5f, rumbleIntesity);
 	//	myShieldData.Damage(missile.GetBaseDmg() * dmgMultiplier);
 	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
 	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
@@ -208,7 +210,7 @@ public class ShipMaster : MonoBehaviour {
 	//		ShieldRecharge();
 	//		return;
 	//	}
-	//	//controller.AddRumble(1f, rumbleIntesity);
+	//	controller.AddRumble(1f, rumbleIntesity);
 	//	myHealthData.Damage(laser.GetBaseDmg() * dmgMultiplier);
 	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
 	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
@@ -242,7 +244,7 @@ public class ShipMaster : MonoBehaviour {
 	//		ShieldRecharge();
 	//		return;
 	//	}
-	//	//controller.AddRumble(1f, rumbleIntesity);
+	//	controller.AddRumble(1f, rumbleIntesity);
 	//	myHealthData.Damage(missile.GetBaseDmg() * dmgMultiplier);
 	//	healthBar.fillAmount = GetHealthData().HealthPercentage();
 	//	shieldBar.fillAmount = GetShieldData().ShieldHealthPercentage();
@@ -254,7 +256,6 @@ public class ShipMaster : MonoBehaviour {
 	//void EMPHit()
 	//{
 	//	Debug.Log("Enemy Emp Hit");
-	//	stunnedPrefab.SetActive(true);
 	//	myImpairments = Impairments.Stunned;
 	//	Invoke("ResetDebuff", 5f);
 	//}

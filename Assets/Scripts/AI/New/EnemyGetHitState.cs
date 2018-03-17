@@ -78,8 +78,8 @@ public class EnemyGetHitState : IEnemyState {
                 EnemyStatePattern allyState = ally.transform.GetComponent<EnemyStatePattern>();
                 if (allyState.currentState == allyState.statePatrol)
                 {
-                    allyState.MyAttackTarget = enemy.myAttacker;
-                    allyState.locationOfInterest = enemy.myAttacker.position;
+                    allyState.myEnemyMaster.CallEventSetAttackTargetCoordinates(enemy.myAttacker);
+                    allyState.locationOfInterest = enemy.myAttacker;
                     allyState.currentState = allyState.stateInvestigate;
                 }
             }
@@ -93,8 +93,8 @@ public class EnemyGetHitState : IEnemyState {
     {
         if (enemy.capturedState == enemy.statePatrol)
         {
-            enemy.MyAttackTarget = enemy.myAttacker;
-            enemy.locationOfInterest = enemy.myAttacker.position;
+			enemy.myEnemyMaster.CallEventSetAttackTargetCoordinates(enemy.myAttacker);
+            enemy.locationOfInterest = enemy.myAttacker;
             enemy.capturedState = enemy.stateInvestigate;
         }
     }

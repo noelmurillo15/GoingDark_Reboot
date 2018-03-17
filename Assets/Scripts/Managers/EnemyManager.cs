@@ -73,7 +73,7 @@ public class EnemyManager : MonoBehaviour {
     public void AllEnemiesPatrol()
     {
         for (int x = 0; x < enemies.Count; x++)
-            enemies[x].AttackTarget = null;
+            enemies[x].CallEventSetAttackTargetCoordinates(null);
     }
 
     void RandomAmmoDrop(Vector3 _pos)

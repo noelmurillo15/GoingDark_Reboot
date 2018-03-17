@@ -11,22 +11,22 @@ public class EnemyAlertState : IEnemyState {
 
 
     #region Alert State Properties
-    private readonly EnemyStatePattern enemy;
+    readonly EnemyStatePattern enemy;
 
-    private float informRate = 1f;
-    private float nextInform;
-    private float offset = 0.333f;
+    float informRate = 1f;
+    float nextInform;
+    float offset = 0.333f;
 
-    private Vector3 targetPos;
-    private Vector3 lookAtTarget;
+    Vector3 targetPos;
+    Vector3 lookAtTarget;
 
-    private RaycastHit hit;
-    private Collider[] colliders;
-    private Collider[] friendlyColliders;
+    RaycastHit hit;
+    Collider[] colliders;
+    Collider[] friendlyColliders;
 
-    private int detectionCount;
-    private int lastDetectionCount;
-    private Transform possileTarget;
+    int detectionCount;
+    int lastDetectionCount;
+    Transform possileTarget;
     #endregion
 
 
@@ -38,25 +38,20 @@ public class EnemyAlertState : IEnemyState {
 
     #region Ienemy Methods
     public void UpdateState()
-    {
-        enemy.meshRendererFlag.material.color = Color.yellow;
+    {		
         Look();
     }
-
     public void ToPatrolState()
     {
-		Debug.Log("Alert -> Patrol");
+		enemy.meshRendererFlag.material.color = Color.green;
 		enemy.currentState = enemy.statePatrol;
-		return;
 	}
-
     public void ToChaseState()
     {
-		Debug.Log("Alert -> Chase");
+		enemy.meshRendererFlag.material.color = Color.blue;
+		enemy.myEnemyMaster.GetMoveData().boost = 1.5f;
 		enemy.currentState = enemy.stateChase;
-		return;
 	}
-
     public void ToAlertState() {/* not used by Alert state */}
     public void ToAttackState() {/* not used by Alert state */ }
     #endregion
@@ -70,15 +65,15 @@ public class EnemyAlertState : IEnemyState {
         //  Check Max Sight Range
         lastDetectionCount = detectionCount;
         colliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.sightRange, enemy.enemyLayers);
+		if (colliders.Length == 0)
+			ToPatrolState();
+
         foreach (Collider col in colliders)
         {
             if (col.transform == enemy.myTransform)
-            {
-                continue;
-            }
+                continue;            
 
-            lookAtTarget = new Vector3(col.transform.position.x, col.transform.position.y + offset, col.transform.position.z);
-
+            lookAtTarget = col.transform.position;
             if (Physics.Linecast(enemy.myTransform.position, lookAtTarget, out hit, enemy.enemyLayers))
             {
                 foreach (string tags in enemy.enemyTags)
@@ -97,12 +92,11 @@ public class EnemyAlertState : IEnemyState {
         {
             detectionCount = 0;
         }
-
         if (detectionCount >= enemy.requiredDetectionCount)
         {
+			nextInform = 0f;
             detectionCount = 0;
-            enemy.locationOfInterest = possileTarget.position;
-            enemy.myEnemyMaster.AttackTarget = possileTarget;
+            enemy.locationOfInterest = possileTarget;
             InformNearbyAllies();
             ToChaseState();
         }
@@ -116,28 +110,20 @@ public class EnemyAlertState : IEnemyState {
         if (Time.time > nextInform)
         {
             nextInform = Time.time + informRate;
-
             friendlyColliders = Physics.OverlapSphere(enemy.myTransform.position, enemy.sightRange, enemy.friendlyLayers);
             if (friendlyColliders.Length == 0)
-            {
-                return;
-            }
+                return;            
 
             foreach (Collider ally in friendlyColliders)
             {
                 if (ally.transform.GetComponent<EnemyStatePattern>() != null)
                 {
                     EnemyStatePattern allyState = ally.transform.GetComponent<EnemyStatePattern>();
-
-                    if (allyState.currentState == allyState.statePatrol)
-                    {
-                        if (enemy.myEnemyMaster.AttackTarget != enemy.myTransform)
-                        {
-                            allyState.myEnemyMaster.AttackTarget = enemy.myEnemyMaster.AttackTarget;
-                            allyState.locationOfInterest = allyState.myEnemyMaster.AttackTarget.position;
-                            allyState.currentState = allyState.stateAlert;
-                        }
-                    }
+					if (allyState.currentState == allyState.statePatrol)
+					{
+						allyState.locationOfInterest = enemy.locationOfInterest;
+						allyState.currentState = allyState.stateAlert;
+					}
                 }
             }
         }
@@ -147,15 +133,11 @@ public class EnemyAlertState : IEnemyState {
     /// </summary>
     void GoToLocationOfInterest()
     {
-        if (enemy.locationOfInterest != Vector3.zero)
+        if (enemy.locationOfInterest != null)
         {
-            enemy.myEnemyMaster.GetMoveData().IncreaseSpeed();
-            Vector3 dir = enemy.locationOfInterest - new Vector3(enemy.myTransform.position.x - 100, enemy.myTransform.position.y, enemy.myTransform.position.z);
+            Vector3 dir = enemy.locationOfInterest.position - enemy.myTransform.position;
             Vector3 rotation = Vector3.RotateTowards(enemy.myTransform.forward, dir, Time.fixedDeltaTime, 0.0f);
             enemy.myTransform.rotation = Quaternion.LookRotation(rotation);
-
-            //  TODO :
-            //  Go to patrol state if you arrive at location of interest and find nothing
         }
     }
     #endregion

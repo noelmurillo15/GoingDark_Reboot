@@ -14,28 +14,24 @@ public class EnemyStatePattern : MonoBehaviour {
     #region Decision Making Properties
     [Header("Dependancies")]
     public EnemyMaster myEnemyMaster;
-
-    [Header("Attack")]
-    public float attackRange = 500f;
-    public GameObject myRangedWeapon;
-    [SerializeField] bool isAttacking;
-
+	[Space]
     [Header("Detection")]
-    public Transform myFollowTarget;
+    public float sightRange = 2000f;
+    public float attackRange = 1200f;
+    public float detectBehindRange = 650f;
+    public float fleeRange = 2500f;
 	[Space]
-    public float sightRange = 600f;
-    public float fleeRange = 800f;
-    public float detectBehindRange = 250f;
-	[Space]
-    public float offset = 0.5f;
-    public int requiredDetectionCount = 10;   
+    public int requiredDetectionCount = 100;
 
-    [Header("Layer")]
+	[Header("Layers")]
     public LayerMask enemyLayers;
     public string[] enemyTags;
 	[Space]
     public LayerMask friendlyLayers;
-    public string[] friendlyTags;    
+    public string[] friendlyTags;  
+	
+	[Header("Follow")]
+    public Transform myFollowTarget;
 
     [Header("Debugging")]
     public MeshRenderer meshRendererFlag;
@@ -46,7 +42,7 @@ public class EnemyStatePattern : MonoBehaviour {
 
     //  Targets & Wander Pts
     [HideInInspector] public Transform myAttacker;
-    [HideInInspector] public Vector3 locationOfInterest;
+    [HideInInspector] public Transform locationOfInterest;
 
     //  State AI    
     public IEnemyState currentState;
@@ -58,52 +54,19 @@ public class EnemyStatePattern : MonoBehaviour {
     public EnemyGetHitState stateGetHit;
     public EnemyInvestigateState stateInvestigate;
     public EnemyFleeState fleeState;
-    //public EnemyFollowState followState;
     #endregion
 
 
 
+	#region Unity Functions
     void Awake()
     {
         Initialize();
         myEnemyMaster.EventCriticalHealth += ActivateFleeState;
         myEnemyMaster.EventHealthRecovered += ActivatePatrolState;
         myEnemyMaster.EventOnHit += ActivateGetHitState;
-
-		if(gameObject.GetComponentInChildren<LaserSystem>() != null)
-		{
-			Debug.Log("Enemy laser system attached");
-		}
-		else if(gameObject.GetComponentInChildren<MissileSystem>() != null)
-		{
-			Debug.Log("Enemy missile system attached");
-		}
-		else
-		{
-			Debug.LogError("Something is missing...");
-		}
     }
-
-    void Initialize()
-    {
-        myTransform = transform;
-        myRigidbody = GetComponent<Rigidbody>();
-        SetupStateRefs();
-        ActivatePatrolState();
-    }
-
-    void SetupStateRefs()
-    {
-        statePatrol = new EnemyPatrolState(this);
-        stateAlert = new EnemyAlertState(this);
-        stateChase = new EnemyChaseState(this);
-        stateAttack = new EnemyAttackState(this);
-        stateGetHit = new EnemyGetHitState(this);
-        stateInvestigate = new EnemyInvestigateState(this);
-        fleeState = new EnemyFleeState(this);
-        //followState = new EnemyFollowState(this);
-    }
-
+	
     void OnDisable()
     {
         myEnemyMaster.EventCriticalHealth -= ActivateFleeState;
@@ -112,34 +75,48 @@ public class EnemyStatePattern : MonoBehaviour {
         StopAllCoroutines();
     }
 
-	private void OnDrawGizmos()
-	{
-		Gizmos.color = Color.white;
-		Gizmos.DrawWireSphere(transform.position, sightRange);
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere(transform.position, attackRange);
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireSphere(transform.position, detectBehindRange);
-	}
+	//void OnDrawGizmos()
+	//{
+	//	Gizmos.color = Color.white;
+	//	Gizmos.DrawWireSphere(transform.position, sightRange);
+	//	Gizmos.color = Color.red;
+	//	Gizmos.DrawWireSphere(transform.position, attackRange);
+	//	Gizmos.color = Color.yellow;
+	//	Gizmos.DrawWireSphere(transform.position, detectBehindRange);
+	//}
 
 	void FixedUpdate()
     {
         currentState.UpdateState();
-        myRigidbody.MovePosition(myTransform.position + myTransform.forward * Time.fixedDeltaTime * myEnemyMaster.GetMoveData().speed);
+        myRigidbody.MovePosition(myTransform.position + myTransform.forward * 
+			Time.fixedDeltaTime * myEnemyMaster.GetMoveData().speed);
     }
+	#endregion
 
-    #region Accessors
-    public Transform MyAttackTarget
-    {
-        get { return myEnemyMaster.AttackTarget; }
-        set { myEnemyMaster.AttackTarget = value; }
-    }
-    #endregion
+	#region Initialization
+	void Initialize()
+	{
+		myTransform = transform;
+		myRigidbody = GetComponent<Rigidbody>();
+		SetupStateRefs();
+		ActivatePatrolState();
+	}
 
-    #region Enemy State Pattern
-    void ActivateFleeState()
+	void SetupStateRefs()
+	{
+		statePatrol = new EnemyPatrolState(this);
+		stateAlert = new EnemyAlertState(this);
+		stateChase = new EnemyChaseState(this);
+		stateGetHit = new EnemyGetHitState(this);
+		stateInvestigate = new EnemyInvestigateState(this);
+		fleeState = new EnemyFleeState(this);
+		//followState = new EnemyFollowState(this);
+	}
+	#endregion
+
+	#region Enemy State Pattern
+	void ActivateFleeState()
     {
-        //myRangedWeapon.SetActive(false);
         if (currentState == stateGetHit)
         {
             capturedState = fleeState;
@@ -150,8 +127,9 @@ public class EnemyStatePattern : MonoBehaviour {
 
     void ActivatePatrolState()
     {
+		myEnemyMaster.GetMoveData().boost = 1f;
         currentState = statePatrol;
-        //myRangedWeapon.SetActive(false);
+		myEnemyMaster.CallEventSetAttackTargetCoordinates(null);
     }
 
     void ActivateGetHitState()
@@ -172,15 +150,13 @@ public class EnemyStatePattern : MonoBehaviour {
         meshRendererFlag.material.color = Color.grey;
         yield return new WaitForSeconds(.1f);
 
-        isAttacking = false;
         myEnemyMaster.CallEventHealthRecovered();
         currentState = capturedState;
     }
 
-    public void Distract(Vector3 distractionPos)
+    public void Distract(Transform distractionPos)
     {
         locationOfInterest = distractionPos;
-
         if (currentState == statePatrol)
         {
             currentState = stateAlert;

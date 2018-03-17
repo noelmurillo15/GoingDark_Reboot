@@ -10,7 +10,7 @@ using GoingDark.Core.Enums;
 using UnityEngine.SceneManagement;
 
 
-public class PlayerStats : ShipMaster {
+public class PlayerMaster : ShipMaster {
 
 
 	#region Variables
@@ -149,7 +149,7 @@ public class PlayerStats : ShipMaster {
     {
 		EventDeath -= Kill;
 		Debug.Log("Player Kill called");
-		deathTransition.Death();
+		//deathTransition.Death();
         Invoke("GameOver", 1.5f);
     }
     public void FadeOut()

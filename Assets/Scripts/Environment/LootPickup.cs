@@ -3,12 +3,12 @@
 public class LootPickup : MonoBehaviour
 {
 
-    private PlayerStats playerStats;
+    private PlayerMaster playerStats;
 
     // Use this for initialization
     void Start()
     {
-        playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+        playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMaster>();
     }
 
     void OnTriggerEnter(Collider col)

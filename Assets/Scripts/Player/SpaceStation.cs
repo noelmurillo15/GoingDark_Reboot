@@ -12,7 +12,7 @@ public class SpaceStation : MonoBehaviour
 
     private float repairTimer;
     private AudioSource sound;
-    private PlayerStats stats;
+    private PlayerMaster stats;
     #endregion
 
 
@@ -39,7 +39,7 @@ public class SpaceStation : MonoBehaviour
         //    go1.transform.parent = transform;
         //    go1.transform.localPosition = loc;
         //}
-        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMaster>();
     }
 
     void Update()

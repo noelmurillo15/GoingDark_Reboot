@@ -4,13 +4,14 @@ using GoingDark.Core.Enums;
 //  Parent class of all Ship Systems
 public class ShipSystem : MonoBehaviour {
 
-    #region Properties
-    public SystemStatus Status { get; protected set; }
+	#region Properties
+	public SystemStatus Status { get; protected set; }
     public bool SystemReady { get; protected set; }
     public bool Activated { get; protected set; }
 
     protected float cooldown;
-    protected float maxCooldown;
+	[Header("General")]
+	[SerializeField] protected float maxCooldown;
     #endregion
 
 

@@ -4,7 +4,7 @@ public class HyperdriveSystem : ShipSystem
 {
 
     #region Properties
-    private PlayerStats stats;
+    private PlayerMaster stats;
     private GameObject particles;
         #endregion
 
@@ -12,7 +12,7 @@ public class HyperdriveSystem : ShipSystem
     void Start () {
         maxCooldown = 40f;
 
-        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMaster>();
         particles = transform.GetChild(0).gameObject;
         particles.SetActive(false);
     }

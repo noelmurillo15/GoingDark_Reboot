@@ -6,7 +6,7 @@ public class SpeedGauge : MonoBehaviour
 
     private Text number;
     private float percent;
-    private PlayerStats stats;
+    private PlayerMaster stats;
 
 
     // Use this for initialization
@@ -14,7 +14,7 @@ public class SpeedGauge : MonoBehaviour
     {
         percent = 0f;
         number = GetComponent<Text>();
-        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+        stats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMaster>();
     }
 
     // Update is called once per frame

@@ -67,6 +67,7 @@ public class ProjectileMaster : MonoBehaviour {
 			{				
 				if (col.gameObject.GetComponent<ShipMaster>() != null)
 					col.gameObject.GetComponent<ShipMaster>().CallEventProjectileHit(GetProjectileType(), GetDamage(), GetDebuff());
+
 				Kill();
 			}
 
@@ -78,13 +79,11 @@ public class ProjectileMaster : MonoBehaviour {
 		}
 		else
 		{
-			Debug.Log("Projectile controlled by Enemy");
 			if (col.transform.CompareTag("Player"))
 			{
 				if (col.gameObject.GetComponent<ShipMaster>() != null)
 					col.gameObject.GetComponent<ShipMaster>().CallEventProjectileHit(GetProjectileType(), GetDamage(), GetDebuff());
 
-				Debug.Log("Player was Hit by Enemy!");
 				Kill();
 			}
 			if (col.transform.CompareTag("Asteroid"))

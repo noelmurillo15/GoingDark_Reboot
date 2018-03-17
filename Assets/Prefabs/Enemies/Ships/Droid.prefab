@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4103999052425712}
   - component: {fileID: 198170989420247246}
   - component: {fileID: 199170661896447168}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4101303215393326}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: Trails
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 4037333906556674}
   - component: {fileID: 198793737748186784}
   - component: {fileID: 199891933065412062}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 4085478511100544}
   - component: {fileID: 198712583498192108}
   - component: {fileID: 199357298977997710}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 4277963250077540}
   - component: {fileID: 33060252177094914}
   - component: {fileID: 23385270682755932}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 4866423105391196}
   - component: {fileID: 198935040287300732}
   - component: {fileID: 199202281236321428}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 4942123906557446}
   - component: {fileID: 33140005095077652}
   - component: {fileID: 23725389945877892}
-  m_Layer: 14
+  m_Layer: 2
   m_Name: Drone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -238,7 +238,7 @@ GameObject:
   - component: {fileID: 4173639614235784}
   - component: {fileID: 198880001415181052}
   - component: {fileID: 199508418424556326}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4059328265445530}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: Debuffs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,7 +304,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4031525615515604}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: GunEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 4534799122425762}
   - component: {fileID: 198967113600342908}
   - component: {fileID: 199943711771980176}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,7 +337,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4914515310080032}
   - component: {fileID: 114590315165729262}
-  m_Layer: 11
+  m_Layer: 2
   m_Name: LaserSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 4295358814803944}
   - component: {fileID: 198870888571579578}
   - component: {fileID: 199184925122748252}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 4125243981521412}
   - component: {fileID: 198315020712994826}
   - component: {fileID: 199569586732919820}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PComponent Electric Bolts
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +448,7 @@ Transform:
   - {fileID: 4774758867528328}
   - {fileID: 4343062147455324}
   m_Father: {fileID: 4103501885630656}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4103501885630656
 Transform:
@@ -457,14 +457,14 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1644856983408988}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -3800}
+  m_LocalPosition: {x: 0, y: 0, z: 5029}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 4914515310080032}
-  - {fileID: 4059328265445530}
   - {fileID: 4942123906557446}
-  - {fileID: 4277963250077540}
+  - {fileID: 4059328265445530}
   - {fileID: 4101303215393326}
+  - {fileID: 4914515310080032}
+  - {fileID: 4277963250077540}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -533,7 +533,7 @@ Transform:
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_Children: []
   m_Father: {fileID: 4103501885630656}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4295358814803944
 Transform:
@@ -655,7 +655,7 @@ Transform:
   m_Children:
   - {fileID: 4031525615515604}
   m_Father: {fileID: 4103501885630656}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4939268643966068
 Transform:
@@ -683,7 +683,7 @@ Transform:
   m_LocalScale: {x: 20, y: 20, z: 20}
   m_Children: []
   m_Father: {fileID: 4103501885630656}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &23385270682755932
 MeshRenderer:
@@ -781,7 +781,7 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!65 &65740522259304218
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -1084,6 +1084,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c9bdfac272edc478ff191af38cf7a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HealthInfo:
+    health: 0
+    maxHealth: 0
+    hpCritical: 0
+    isDead: 0
 --- !u!114 &114590315165729262
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1095,18 +1100,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c00004351d6d73449b95306f0a5a873, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPlayerControlled: 0
+  maxCooldown: 1
   lasers:
-  - type: 0
-    maxFireRate: 0
-  - type: 0
-    maxFireRate: 0
-  currType: 0
-  gun1: {fileID: 0}
+  - type: 9
+  myTarget: {fileID: 0}
+  gun1: {fileID: 4031525615515604}
   gun2: {fileID: 0}
   playerUI: {fileID: 0}
-  flip: 0
-  singleBarrel: 0
 --- !u!114 &114632308177864304
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1119,18 +1119,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myEnemyMaster: {fileID: 114763446923795970}
-  myRangedWeapon: {fileID: 1805193395022144}
-  attackRange: 500
-  isAttacking: 0
-  myFollowTarget: {fileID: 0}
-  mySightLayers:
-    serializedVersion: 2
-    m_Bits: 3072
-  sightRange: 600
-  fleeRange: 800
-  detectBehindRange: 250
-  offset: 0.8
-  requiredDetectionCount: 10
+  sightRange: 1600
+  attackRange: 1200
+  detectBehindRange: 600
+  fleeRange: 3000
+  requiredDetectionCount: 100
   enemyLayers:
     serializedVersion: 2
     m_Bits: 1024
@@ -1141,11 +1134,12 @@ MonoBehaviour:
     m_Bits: 2048
   friendlyTags:
   - Enemy
+  myFollowTarget: {fileID: 0}
   meshRendererFlag: {fileID: 23385270682755932}
   myTransform: {fileID: 0}
   myRigidbody: {fileID: 0}
   myAttacker: {fileID: 0}
-  locationOfInterest: {x: 0, y: 0, z: 0}
+  locationOfInterest: {fileID: 0}
 --- !u!114 &114763446923795970
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1164,21 +1158,19 @@ MonoBehaviour:
     rotateSpeed: 0
     acceleration: 0
   myHealthData:
-    isDead: 0
-    healthCritical: 0
     health: 0
     maxHealth: 0
+    hpCritical: 0
+    isDead: 0
   myShieldData:
     ShieldGameobject: {fileID: 0}
     active: 0
     health: 0
     maxHealth: 0
   myDebuffData: {fileID: 0}
-  myAttackTarget: {fileID: 0}
   myType: 2
-  baseHealth: 10
+  baseHealth: 25
   hasShield: 0
-  stunnedPrefab: {fileID: 1472967776604910}
 --- !u!198 &198170989420247246
 ParticleSystem:
   m_ObjectHideFlags: 1

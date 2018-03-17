@@ -3,11 +3,11 @@
 public class CreditsBox : MonoBehaviour
 {
 
-    private PlayerStats playerStats;
+    private PlayerMaster playerStats;
     private Transform myTransform;    // Use this for initialization
     void Start()
     {
-        playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
+        playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMaster>();
         myTransform = transform;
     }
     void FixedUpdate()
